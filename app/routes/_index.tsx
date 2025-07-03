@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react';
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: "TRADING GEAR" },
+    { name: "description", content: "AI 트레이딩의 새로운 시대" },
   ];
 };
 export default function Index(){

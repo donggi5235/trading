@@ -97,7 +97,7 @@ export default function Index(){
             className={`flex items-center text-2xl font-bold cursor-pointer transition-colors duration-300 ${primaryColor}`}
             onClick={() => scrollToSection('home')}
           >
-            <img className="h-[50px]" src="/logo.png" alt="" />
+            <img className="h-[50px]" src="/logo.png" alt="Logo" loading="lazy" />
           </div>
 
           {/* Desktop Navigation */}

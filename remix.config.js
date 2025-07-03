@@ -3,7 +3,8 @@
 module.exports = {
   appDirectory: "app",
   assetsBuildDirectory: "public/build",
-  publicPath: "/build/",
+  publicPath: "/trading/build/",
+  serverBuildPath: "build/index.js",
   serverBuildDirectory: "build",
   serverModuleFormat: "esm",
   ignoredRouteFiles: ["**/.*"],

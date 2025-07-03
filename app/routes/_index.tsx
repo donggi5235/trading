@@ -1,5 +1,5 @@
 import type { MetaFunction } from "@remix-run/node";
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 export const meta: MetaFunction = () => {
   return [
@@ -97,8 +97,7 @@ export default function Index(){
             className={`flex items-center text-2xl font-bold cursor-pointer transition-colors duration-300 ${primaryColor}`}
             onClick={() => scrollToSection('home')}
           >
-            <span className="text-3xl mr-2">⚙️</span>
-            Trading Gear
+            <img className="h-[50px]" src="/logo.png" alt="" />
           </div>
 
           {/* Desktop Navigation */}

@@ -1,3 +1,4 @@
+import { Moon, Sun } from 'lucide-react';
 import { useState } from 'react';
 import { useThemeStore } from '~/stores/themeStore';
 
@@ -25,7 +26,8 @@ export default function Header() {
           href="/"
           className={`flex items-center text-2xl font-bold cursor-pointer transition-colors duration-300 ${primaryColor}`}
         >
-          <img className="h-[50px]" src="/logo.png" alt="Logo" loading="lazy" />
+          
+          {theme === 'dark' ? <img className="h-[44px]" src="/logo-white.png" alt="Logo" loading="lazy" /> : <img className="h-[44px]" src="/logo.png" alt="Logo" loading="lazy" />}
         </a>
 
         {/* Desktop Navigation */}
@@ -39,10 +41,10 @@ export default function Header() {
           {/* Theme Toggle - Desktop */}
           <li>
             <button 
-              className={`w-10 h-10 rounded-full border-2 ${theme === 'dark' ? 'border-cyan-400/20 hover:border-cyan-400 hover:text-cyan-400' : 'border-blue-600/20 hover:border-blue-600 hover:text-blue-600'} ${textPrimary} transition-all duration-300 hover:rotate-180 flex items-center justify-center`}
+              className={`w-10 h-10 rounded-full border-2 ${theme === 'dark' ? 'border-cyan-400/20 hover:border-cyan-400 hover:text-cyan-400' : 'border-blue-600/20 hover:border-blue-600 text-yellow-400 hover:text-blue-600'} ${textPrimary} transition-all duration-300 hover:rotate-180 flex items-center justify-center`}
               onClick={toggleTheme}
             >
-              {theme === 'dark' ? '🌙' : '☀️'}
+              {theme === 'dark' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
             </button>
           </li>
         </ul>
@@ -63,7 +65,7 @@ export default function Header() {
         {/* CTA Button - Desktop */}
         <button 
           className={`hidden lg:block ${theme === 'dark' ? 'bg-gradient-to-r from-cyan-400 to-emerald-400 text-slate-900 hover:shadow-cyan-400/30' : 'bg-gradient-to-r from-blue-600 to-emerald-600 text-white hover:shadow-blue-600/30'} px-6 py-3 rounded-full font-bold hover:transform hover:-translate-y-1 hover:shadow-lg transition-all duration-300`}
-          onClick={() => handleScrollToSection('signup')}
+          onClick={() => location.href = '/dashboard'}
         >
           무료 체험 시작
         </button>
@@ -95,11 +97,11 @@ export default function Header() {
         {/* Mobile Menu Content */}
         <div className="flex flex-col h-full">
           <ul className="px-6 py-8 space-y-6 flex-1">
-            <li><a className={`block ${textPrimary} hover:${primaryColor.replace('text-', 'text-')} font-medium cursor-pointer transition-colors duration-300 py-3 text-lg border-b border-gray-200/10`} onClick={() => handleScrollToSection('home')}>홈</a></li>
-            <li><a className={`block ${textPrimary} hover:${primaryColor.replace('text-', 'text-')} font-medium cursor-pointer transition-colors duration-300 py-3 text-lg border-b border-gray-200/10`} onClick={() => handleScrollToSection('features')}>기능</a></li>
-            <li><a className={`block ${textPrimary} hover:${primaryColor.replace('text-', 'text-')} font-medium cursor-pointer transition-colors duration-300 py-3 text-lg border-b border-gray-200/10`} onClick={() => handleScrollToSection('bots')}>트레이딩 봇</a></li>
-            <li><a className={`block ${textPrimary} hover:${primaryColor.replace('text-', 'text-')} font-medium cursor-pointer transition-colors duration-300 py-3 text-lg border-b border-gray-200/10`} onClick={() => handleScrollToSection('pricing')}>요금제</a></li>
-            <li><a className={`block ${textPrimary} hover:${primaryColor.replace('text-', 'text-')} font-medium cursor-pointer transition-colors duration-300 py-3 text-lg border-b border-gray-200/10`} onClick={() => handleScrollToSection('contact')}>문의</a></li>
+            <li><a className={`block ${textPrimary} hover:${primaryColor.replace('text-', 'text-')} font-medium cursor-pointer transition-colors duration-300 py-3 text-lg border-b border-gray-200/10`} >홈</a></li>
+            <li><a className={`block ${textPrimary} hover:${primaryColor.replace('text-', 'text-')} font-medium cursor-pointer transition-colors duration-300 py-3 text-lg border-b border-gray-200/10`} >기능</a></li>
+            <li><a className={`block ${textPrimary} hover:${primaryColor.replace('text-', 'text-')} font-medium cursor-pointer transition-colors duration-300 py-3 text-lg border-b border-gray-200/10`} >트레이딩 봇</a></li>
+            <li><a className={`block ${textPrimary} hover:${primaryColor.replace('text-', 'text-')} font-medium cursor-pointer transition-colors duration-300 py-3 text-lg border-b border-gray-200/10`} >요금제</a></li>
+            <li><a className={`block ${textPrimary} hover:${primaryColor.replace('text-', 'text-')} font-medium cursor-pointer transition-colors duration-300 py-3 text-lg border-b border-gray-200/10`} >문의</a></li>
           </ul>
 
           {/* Mobile Menu Footer */}
@@ -116,7 +118,7 @@ export default function Header() {
             
             <button 
               className={`w-full ${theme === 'dark' ? 'bg-gradient-to-r from-cyan-400 to-emerald-400 text-slate-900 hover:shadow-cyan-400/30' : 'bg-gradient-to-r from-blue-600 to-emerald-600 text-white hover:shadow-blue-600/30'} px-6 py-4 rounded-full font-bold text-lg hover:transform hover:-translate-y-1 hover:shadow-lg transition-all duration-300`}
-              onClick={() => handleScrollToSection('signup')}
+              onClick={() => location.href = '/dashboard'}
             >
               무료 체험 시작
             </button>

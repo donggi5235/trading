@@ -1,5 +1,8 @@
 import type { MetaFunction } from "@remix-run/node";
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import Header from "~/components/Header";
+import Footer from "~/components/Footer";
+import { useThemeStore } from '~/stores/themeStore';
 
 export const meta: MetaFunction = () => {
   return [
@@ -9,57 +12,20 @@ export const meta: MetaFunction = () => {
 };
 
 export default function About() {
-  const [theme, setTheme] = useState('dark');
-  const [isClient, setIsClient] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { theme, isClient, initializeTheme } = useThemeStore();
 
   useEffect(() => {
-    setIsClient(true);
-    // Load saved theme from localStorage
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    setTheme(savedTheme);
-    
-    // Apply theme to document
-    if (savedTheme === 'light') {
-      document.documentElement.classList.add('light');
-    } else {
-      document.documentElement.classList.remove('light');
-    }
-  }, []);
+    initializeTheme();
+  }, [initializeTheme]);
 
-  const toggleTheme = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
-    
-    if (isClient) {
-      localStorage.setItem('theme', newTheme);
-      
-      // Apply theme to document
-      if (newTheme === 'light') {
-        document.documentElement.classList.add('light');
-      } else {
-        document.documentElement.classList.remove('light');
-      }
-    }
-  };
-
-  const scrollToSection = (sectionId) => {
+  const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
-    setIsMobileMenuOpen(false);
   };
 
-  const navigateToHome = () => {
-    window.location.href = '/';
-  };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const Particle = ({ index }) => (
+  const Particle = ({ index }: { index: number }) => (
     <div 
       className={`absolute w-1 h-1 rounded-full opacity-10 pointer-events-none animate-pulse
         ${theme === 'dark' ? 'bg-cyan-400' : 'bg-blue-600'}`}
@@ -76,10 +42,6 @@ export default function About() {
     ? 'bg-gradient-to-br from-slate-900 to-slate-800 text-white'
     : 'bg-gradient-to-br from-white to-slate-50 text-slate-900';
 
-  const headerClasses = theme === 'dark'
-    ? 'bg-slate-900/95 border-cyan-400/20'
-    : 'bg-white/95 border-blue-600/20';
-
   const textPrimary = theme === 'dark' ? 'text-white' : 'text-slate-900';
   const textSecondary = theme === 'dark' ? 'text-slate-300' : 'text-slate-600';
   const primaryColor = theme === 'dark' ? 'text-cyan-400' : 'text-blue-600';
@@ -94,109 +56,7 @@ export default function About() {
       ))}
 
       {/* Header */}
-      <header className={`fixed top-0 w-full backdrop-blur-lg z-50 border-b transition-all duration-300 ${headerClasses}`}>
-        <nav className="max-w-6xl mx-auto flex justify-between items-center px-4 lg:px-8 py-4">
-          
-          {/* Logo */}
-          <div 
-            className={`flex items-center text-2xl font-bold cursor-pointer transition-colors duration-300 ${primaryColor}`}
-            onClick={navigateToHome}
-          >
-            <img className="h-[50px]" src="/logo.png" alt="Logo" loading="lazy" />
-          </div>
-
-          {/* Desktop Navigation */}
-          <ul className="hidden lg:flex items-center space-x-8">
-            <li><a className={`${textPrimary} hover:${primaryColor.replace('text-', 'text-')} font-medium cursor-pointer transition-colors duration-300`} onClick={navigateToHome}>홈</a></li>
-            <li><a className={`${primaryColor} font-medium cursor-pointer transition-colors duration-300`}>회사소개</a></li>
-            <li><a className={`${textPrimary} hover:${primaryColor.replace('text-', 'text-')} font-medium cursor-pointer transition-colors duration-300`} onClick={() => scrollToSection('journey')}>연혁</a></li>
-            <li><a className={`${textPrimary} hover:${primaryColor.replace('text-', 'text-')} font-medium cursor-pointer transition-colors duration-300`} onClick={() => scrollToSection('team')}>팀</a></li>
-            <li><a className={`${textPrimary} hover:${primaryColor.replace('text-', 'text-')} font-medium cursor-pointer transition-colors duration-300`} onClick={() => scrollToSection('careers')}>채용</a></li>
-            
-            {/* Theme Toggle - Desktop */}
-            <li>
-              <button 
-                className={`w-10 h-10 rounded-full border-2 ${theme === 'dark' ? 'border-cyan-400/20 hover:border-cyan-400 hover:text-cyan-400' : 'border-blue-600/20 hover:border-blue-600 hover:text-blue-600'} ${textPrimary} transition-all duration-300 hover:rotate-180 flex items-center justify-center`}
-                onClick={toggleTheme}
-              >
-                {theme === 'dark' ? '🌙' : '☀️'}
-              </button>
-            </li>
-          </ul>
-
-          {/* Mobile Menu Button */}
-          <div className="lg:hidden flex items-center">
-            <button 
-              className="w-10 h-10 flex flex-col justify-center items-center space-y-1 focus:outline-none"
-              onClick={toggleMobileMenu}
-            >
-              <span className={`w-6 h-0.5 ${theme === 'dark' ? 'bg-white' : 'bg-slate-700'} transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></span>
-              <span className={`w-6 h-0.5 ${theme === 'dark' ? 'bg-white' : 'bg-slate-700'} transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''}`}></span>
-              <span className={`w-6 h-0.5 ${theme === 'dark' ? 'bg-white' : 'bg-slate-700'} transition-all duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></span>
-            </button>
-          </div>
-
-          {/* CTA Button - Desktop */}
-          <button 
-            className={`hidden lg:block ${theme === 'dark' ? 'bg-gradient-to-r from-cyan-400 to-emerald-400 text-slate-900 hover:shadow-cyan-400/30' : 'bg-gradient-to-r from-blue-600 to-emerald-600 text-white hover:shadow-blue-600/30'} px-6 py-3 rounded-full font-bold hover:transform hover:-translate-y-1 hover:shadow-lg transition-all duration-300`}
-            onClick={navigateToHome}
-          >
-            시작하기
-          </button>
-        </nav>
-
-        {/* Mobile Menu */}
-        <div 
-          className={`lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-all duration-300 ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
-          onClick={toggleMobileMenu}
-        ></div>
-
-        <div className={`lg:hidden fixed top-0 right-0 h-full w-80 max-w-[80vw] ${theme === 'dark' ? 'bg-slate-900/98' : 'bg-white/98'} backdrop-blur-lg border-l ${theme === 'dark' ? 'border-cyan-400/20' : 'border-blue-600/20'} z-50 transform transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-          
-          <div className="flex items-center justify-between p-6 border-b border-gray-200/20">
-            <div className={`flex items-center text-xl font-bold ${primaryColor}`}>
-              <span className="text-2xl mr-2">⚙️</span>
-              Trading Gear
-            </div>
-            <button 
-              className="w-8 h-8 flex items-center justify-center focus:outline-none"
-              onClick={toggleMobileMenu}
-            >
-              <span className={`w-6 h-0.5 ${theme === 'dark' ? 'bg-white' : 'bg-slate-700'} transition-all duration-300 rotate-45 absolute`}></span>
-              <span className={`w-6 h-0.5 ${theme === 'dark' ? 'bg-white' : 'bg-slate-700'} transition-all duration-300 -rotate-45 absolute`}></span>
-            </button>
-          </div>
-
-          <div className="flex flex-col h-full">
-            <ul className="px-6 py-8 space-y-6 flex-1">
-              <li><a className={`block ${textPrimary} hover:${primaryColor.replace('text-', 'text-')} font-medium cursor-pointer transition-colors duration-300 py-3 text-lg border-b border-gray-200/10`} onClick={navigateToHome}>홈</a></li>
-              <li><a className={`block ${primaryColor} font-medium cursor-pointer transition-colors duration-300 py-3 text-lg border-b border-gray-200/10`}>회사소개</a></li>
-              <li><a className={`block ${textPrimary} hover:${primaryColor.replace('text-', 'text-')} font-medium cursor-pointer transition-colors duration-300 py-3 text-lg border-b border-gray-200/10`} onClick={() => scrollToSection('journey')}>연혁</a></li>
-              <li><a className={`block ${textPrimary} hover:${primaryColor.replace('text-', 'text-')} font-medium cursor-pointer transition-colors duration-300 py-3 text-lg border-b border-gray-200/10`} onClick={() => scrollToSection('team')}>팀</a></li>
-              <li><a className={`block ${textPrimary} hover:${primaryColor.replace('text-', 'text-')} font-medium cursor-pointer transition-colors duration-300 py-3 text-lg border-b border-gray-200/10`} onClick={() => scrollToSection('careers')}>채용</a></li>
-            </ul>
-
-            <div className="px-6 pb-8 space-y-4">
-              <div className="flex items-center justify-between py-4 border-t border-gray-200/20">
-                <span className={`${textPrimary} font-medium`}>테마 설정</span>
-                <button 
-                  className={`w-12 h-12 rounded-full border-2 ${theme === 'dark' ? 'border-cyan-400/20 hover:border-cyan-400 hover:text-cyan-400' : 'border-blue-600/20 hover:border-blue-600 hover:text-blue-600'} ${textPrimary} transition-all duration-300 hover:rotate-180 flex items-center justify-center text-xl`}
-                  onClick={toggleTheme}
-                >
-                  {theme === 'dark' ? '🌙' : '☀️'}
-                </button>
-              </div>
-              
-              <button 
-                className={`w-full ${theme === 'dark' ? 'bg-gradient-to-r from-cyan-400 to-emerald-400 text-slate-900 hover:shadow-cyan-400/30' : 'bg-gradient-to-r from-blue-600 to-emerald-600 text-white hover:shadow-blue-600/30'} px-6 py-4 rounded-full font-bold text-lg hover:transform hover:-translate-y-1 hover:shadow-lg transition-all duration-300`}
-                onClick={navigateToHome}
-              >
-                시작하기
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header scrollToSection={scrollToSection} />
 
       {/* Hero Section */}
       <section className="min-h-screen flex items-center justify-center text-center relative overflow-hidden pt-20">
@@ -376,20 +236,7 @@ export default function About() {
       </section>
 
       {/* Footer */}
-      <footer className={`${theme === 'dark' ? 'bg-slate-900/90 border-cyan-400/20' : 'bg-white/90 border-blue-600/20'} border-t py-12`}>
-        <div className="max-w-6xl mx-auto px-4 lg:px-8 text-center">
-          <div className="flex flex-wrap justify-center gap-8 mb-8">
-            {['회사소개', '이용약관', '개인정보처리방침', '고객지원', '블로그', '채용정보'].map((link) => (
-              <a key={link} className={`${textSecondary} hover:${primaryColor.replace('text-', 'text-')} transition-colors duration-300 cursor-pointer`}>
-                {link}
-              </a>
-            ))}
-          </div>
-          <div className={`pt-8 border-t ${theme === 'dark' ? 'border-cyan-400/10' : 'border-blue-600/10'} ${textSecondary} text-sm`}>
-            <p>&copy; 2025 Trading Gear. All rights reserved. | 투자에는 원금 손실의 위험이 있습니다.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer onLinkClick={(linkName) => console.log(`About 페이지 Footer 링크 클릭: ${linkName}`)} />
     </div>
   );
 }

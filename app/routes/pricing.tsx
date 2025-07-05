@@ -1,36 +1,33 @@
 import  { useState, useEffect } from 'react';
+import { useThemeStore } from '~/stores/themeStore';
+import Header from '~/components/Header';
+import Footer from '~/components/Footer';
+import type { MetaFunction } from "@remix-run/node";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "요금제 - TRADING GEAR" },
+    { name: "pricing", content: "AI 트레이딩의 새로운 시대" },
+  ];
+};
 
 const PricingPage = () => {
-  const [theme, setTheme] = useState('dark');
-  const [isClient, setIsClient] = useState(false);
+  const { theme, isClient, initializeTheme } = useThemeStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [billingCycle, setBillingCycle] = useState('monthly');
 
   useEffect(() => {
-    setIsClient(true);
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    setTheme(savedTheme);
-    
-    if (savedTheme === 'light') {
-      document.documentElement.classList.add('light');
-    } else {
-      document.documentElement.classList.remove('light');
-    }
+    initializeTheme();
   }, []);
 
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
     
     if (isClient) {
       localStorage.setItem('theme', newTheme);
-      
-      if (newTheme === 'light') {
-        document.documentElement.classList.add('light');
-      } else {
-        document.documentElement.classList.remove('light');
-      }
     }
+    
+    initializeTheme();
   };
 
   const toggleMobileMenu = () => {
@@ -140,91 +137,8 @@ const PricingPage = () => {
     <div className={`min-h-screen transition-all duration-300 ${themeClasses}`}>
       
       {/* Header */}
-      <header className={`fixed top-0 w-full backdrop-blur-lg z-50 border-b transition-all duration-300 ${headerClasses}`}>
-        <nav className="max-w-6xl mx-auto flex justify-between items-center px-4 lg:px-8 py-4">
-          
-          {/* Logo */}
-          <div className={`flex items-center text-2xl font-bold cursor-pointer transition-colors duration-300 ${primaryColor}`}>
-            <span className="text-3xl mr-2">⚙️</span>
-            Trading Gear
-          </div>
-
-          {/* Desktop Navigation */}
-          <ul className="hidden lg:flex items-center space-x-8">
-            <li><a className={`${textPrimary} hover:text-cyan-400 font-medium cursor-pointer transition-colors duration-300`}>홈</a></li>
-            <li><a className={`${textPrimary} hover:text-cyan-400 font-medium cursor-pointer transition-colors duration-300`}>기능</a></li>
-            <li><a className={`${primaryColor} font-medium cursor-pointer transition-colors duration-300`}>요금제</a></li>
-            <li><a className={`${textPrimary} hover:text-cyan-400 font-medium cursor-pointer transition-colors duration-300`}>문의</a></li>
-            
-            {/* Theme Toggle */}
-            <li>
-              <button 
-                className={`w-10 h-10 rounded-full border-2 ${theme === 'dark' ? 'border-cyan-400/20 hover:border-cyan-400 hover:text-cyan-400' : 'border-blue-600/20 hover:border-blue-600 hover:text-blue-600'} ${textPrimary} transition-all duration-300 hover:rotate-180 flex items-center justify-center`}
-                onClick={toggleTheme}
-              >
-                {theme === 'dark' ? '🌙' : '☀️'}
-              </button>
-            </li>
-          </ul>
-
-          {/* Mobile Menu Button */}
-          <div className="lg:hidden flex items-center">
-            <button 
-              className="w-10 h-10 flex flex-col justify-center items-center space-y-1 focus:outline-none"
-              onClick={toggleMobileMenu}
-            >
-              <span className={`w-6 h-0.5 ${theme === 'dark' ? 'bg-white' : 'bg-slate-700'} transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></span>
-              <span className={`w-6 h-0.5 ${theme === 'dark' ? 'bg-white' : 'bg-slate-700'} transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''}`}></span>
-              <span className={`w-6 h-0.5 ${theme === 'dark' ? 'bg-white' : 'bg-slate-700'} transition-all duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></span>
-            </button>
-          </div>
-
-          {/* CTA Button */}
-          <button className={`hidden lg:block ${theme === 'dark' ? 'bg-gradient-to-r from-cyan-400 to-emerald-400 text-slate-900 hover:shadow-cyan-400/30' : 'bg-gradient-to-r from-blue-600 to-emerald-600 text-white hover:shadow-blue-600/30'} px-6 py-3 rounded-full font-bold hover:transform hover:-translate-y-1 hover:shadow-lg transition-all duration-300`}>
-            무료 체험 시작
-          </button>
-        </nav>
-
-        {/* Mobile Menu */}
-        <div className={`lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-all duration-300 ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`} onClick={toggleMobileMenu}></div>
-
-        <div className={`lg:hidden fixed top-0 right-0 h-full w-80 max-w-[80vw] ${theme === 'dark' ? 'bg-slate-900/98' : 'bg-white/98'} backdrop-blur-lg border-l ${theme === 'dark' ? 'border-cyan-400/20' : 'border-blue-600/20'} z-50 transform transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-          
-          <div className="flex items-center justify-between p-6 border-b border-gray-200/20">
-            <div className={`flex items-center text-xl font-bold ${primaryColor}`}>
-              <span className="text-2xl mr-2">⚙️</span>
-              Trading Gear
-            </div>
-            <button className="w-8 h-8 flex items-center justify-center focus:outline-none" onClick={toggleMobileMenu}>
-              <span className={`w-6 h-0.5 ${theme === 'dark' ? 'bg-white' : 'bg-slate-700'} transition-all duration-300 rotate-45 absolute`}></span>
-              <span className={`w-6 h-0.5 ${theme === 'dark' ? 'bg-white' : 'bg-slate-700'} transition-all duration-300 -rotate-45 absolute`}></span>
-            </button>
-          </div>
-
-          <div className="flex flex-col h-full">
-            <ul className="px-6 py-8 space-y-6 flex-1">
-              <li><a className={`block ${textPrimary} hover:text-cyan-400 font-medium cursor-pointer transition-colors duration-300 py-3 text-lg border-b border-gray-200/10`}>홈</a></li>
-              <li><a className={`block ${textPrimary} hover:text-cyan-400 font-medium cursor-pointer transition-colors duration-300 py-3 text-lg border-b border-gray-200/10`}>기능</a></li>
-              <li><a className={`block ${primaryColor} font-medium cursor-pointer transition-colors duration-300 py-3 text-lg border-b border-gray-200/10`}>요금제</a></li>
-              <li><a className={`block ${textPrimary} hover:text-cyan-400 font-medium cursor-pointer transition-colors duration-300 py-3 text-lg border-b border-gray-200/10`}>문의</a></li>
-            </ul>
-
-            <div className="px-6 pb-8 space-y-4">
-              <div className="flex items-center justify-between py-4 border-t border-gray-200/20">
-                <span className={`${textPrimary} font-medium`}>테마 설정</span>
-                <button className={`w-12 h-12 rounded-full border-2 ${theme === 'dark' ? 'border-cyan-400/20 hover:border-cyan-400 hover:text-cyan-400' : 'border-blue-600/20 hover:border-blue-600 hover:text-blue-600'} ${textPrimary} transition-all duration-300 hover:rotate-180 flex items-center justify-center text-xl`} onClick={toggleTheme}>
-                  {theme === 'dark' ? '🌙' : '☀️'}
-                </button>
-              </div>
-              
-              <button className={`w-full ${theme === 'dark' ? 'bg-gradient-to-r from-cyan-400 to-emerald-400 text-slate-900 hover:shadow-cyan-400/30' : 'bg-gradient-to-r from-blue-600 to-emerald-600 text-white hover:shadow-blue-600/30'} px-6 py-4 rounded-full font-bold text-lg hover:transform hover:-translate-y-1 hover:shadow-lg transition-all duration-300`}>
-                무료 체험 시작
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
+      <Header/>
+      
       {/* Hero Section */}
       <section className="pt-32 pb-20 text-center relative overflow-hidden">
         <div className={`absolute inset-0 ${theme === 'dark' ? 'bg-gradient-radial from-cyan-400/10' : 'bg-gradient-radial from-blue-600/10'} to-transparent`}></div>
@@ -449,22 +363,7 @@ const PricingPage = () => {
       </section>
 
       {/* Footer */}
-      <footer className={`${theme === 'dark' ? 'bg-slate-900/90 border-cyan-400/20' : 'bg-white/90 border-blue-600/20'} border-t py-12`}>
-        <div className="max-w-6xl mx-auto px-4 lg:px-8 text-center">
-          <div className="flex flex-wrap justify-center gap-8 mb-8">
-            {['회사소개', '이용약관', '개인정보처리방침', '고객지원', '블로그', '채용정보'].map((link) => (
-              <a key={link} className={`${textSecondary} hover:text-cyan-400 transition-colors duration-300 cursor-pointer`}>
-                {link}
-              </a>
-            ))}
-          </div>
-          <div className={`pt-8 border-t ${theme === 'dark' ? 'border-cyan-400/10' : 'border-blue-600/10'} ${textSecondary} text-sm space-y-2`}>
-            <p>&copy; 2025 Trading Gear. All rights reserved.</p>
-            <p>투자에는 원금 손실의 위험이 있습니다. 신중한 투자 결정을 내리시기 바랍니다.</p>
-            <p>본 서비스는 투자 도구를 제공하며, 투자 수익을 보장하지 않습니다.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer/>
     </div>
   );
 };

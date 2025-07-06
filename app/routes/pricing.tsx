@@ -11,7 +11,7 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-const PricingPage = () => {
+export default function PricingPage() {
   const { theme, isClient, initializeTheme } = useThemeStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [billingCycle, setBillingCycle] = useState('monthly');
@@ -174,7 +174,7 @@ const PricingPage = () => {
                 onClick={() => setBillingCycle('yearly')}
               >
                 연간 결제
-                <span className={`ml-2 px-2 py-1 text-xs ${accentColor} ${theme === 'dark' ? 'bg-emerald-400/20' : 'bg-emerald-600/20'} rounded-full`}>
+                <span className={`ml-2 px-2 py-1 text-xs ${accentColor} ${theme === 'dark' ? 'bg-slate-800/60' : 'bg-white/90'} rounded-full`}>
                   2개월 무료
                 </span>
               </button>
@@ -214,7 +214,7 @@ const PricingPage = () => {
                       ) : (
                         <div>
                           <div className={`text-4xl font-bold ${textPrimary}`}>
-                            ₩{formatPrice(plan.price[billingCycle])}
+                            ₩{formatPrice(plan.price[billingCycle as keyof typeof plan.price])}
                             <span className={`text-lg ${textSecondary} font-normal`}>
                               /{billingCycle === 'monthly' ? '월' : '년'}
                             </span>
@@ -363,9 +363,7 @@ const PricingPage = () => {
       </section>
 
       {/* Footer */}
-      <Footer/>
+      <Footer onLinkClick={(linkName) => linkName} />
     </div>
   );
 };
-
-export default PricingPage;

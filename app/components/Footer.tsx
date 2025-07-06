@@ -1,10 +1,12 @@
 import { useThemeStore } from '~/stores/themeStore';
+import { useNavigate } from 'react-router-dom';
 
 interface FooterProps {
   onLinkClick?: (linkName: string) => void;
 }
 
 export default function Footer({ onLinkClick }: FooterProps) {
+  const navigate = useNavigate();
   const { theme } = useThemeStore();
 
   const textSecondary = theme === 'dark' ? 'text-slate-300' : 'text-slate-600';
@@ -14,17 +16,26 @@ export default function Footer({ onLinkClick }: FooterProps) {
     if (onLinkClick) {
       onLinkClick(linkName);
     }
-    // 여기에 실제 라우팅 로직을 추가할 수 있습니다
-    console.log(`${linkName} 링크 클릭됨`);
+    
+    switch (linkName) {
+      case '이용약관':
+        navigate('/terms');
+        break;
+      case '개인정보처리방침':
+        navigate('/privacy');
+        break;
+      case '고객지원':
+        navigate('/support');
+        break;
+      default:
+      //console.log(`${linkName} 링크 클릭됨`);
+    }
   };
 
   const footerLinks = [
-    '회사소개', 
     '이용약관', 
     '개인정보처리방침', 
-    '고객지원', 
-    '블로그', 
-    '채용정보'
+    '고객지원'
   ];
 
   return (

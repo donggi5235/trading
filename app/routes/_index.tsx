@@ -169,7 +169,7 @@ export default function Index(){
       </section>
 
       {/* Footer Component */}
-      <Footer onLinkClick={(linkName) => console.log(`Footer 링크 클릭: ${linkName}`)} />
+      <Footer onLinkClick={(linkName) => linkName} />
     </div>
   );
 };

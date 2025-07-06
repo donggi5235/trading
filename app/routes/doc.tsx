@@ -1,44 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { useThemeStore } from '~/stores/themeStore';
+import Header from '~/components/Header';
+import Footer from '~/components/Footer';
+import type { MetaFunction } from "@remix-run/node";
+export const meta: MetaFunction = () => {
+  return [
+    { title: "문서 - TRADING GEAR" },
+    { name: "doc", content: "AI 트레이딩의 새로운 시대" },
+  ];
+};
 
-const DocsPage = () => {
-  const [theme, setTheme] = useState('dark');
-  const [isClient, setIsClient] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+export default function DocsPage() {
+  const { theme, initializeTheme } = useThemeStore();
   const [activeSidebarItem, setActiveSidebarItem] = useState('getting-started');
   const [isCodeCopied, setIsCodeCopied] = useState('');
 
   useEffect(() => {
-    setIsClient(true);
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    setTheme(savedTheme);
-    
-    if (savedTheme === 'light') {
-      document.documentElement.classList.add('light');
-    } else {
-      document.documentElement.classList.remove('light');
-    }
-  }, []);
+    initializeTheme();
+  }, [initializeTheme]);
 
-  const toggleTheme = () => {
-    const newTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
-    
-    if (isClient) {
-      localStorage.setItem('theme', newTheme);
-      
-      if (newTheme === 'light') {
-        document.documentElement.classList.add('light');
-      } else {
-        document.documentElement.classList.remove('light');
-      }
-    }
-  };
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const copyToClipboard = (text, id) => {
+  const copyToClipboard = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
     setIsCodeCopied(id);
     setTimeout(() => setIsCodeCopied(''), 2000);
@@ -485,106 +466,26 @@ def create_dca_bot():
     <div className={`min-h-screen transition-all duration-300 ${themeClasses}`}>
       
       {/* Header */}
-      <header className={`fixed top-0 w-full backdrop-blur-lg z-50 border-b transition-all duration-300 ${headerClasses}`}>
-        <nav className="max-w-7xl mx-auto flex justify-between items-center px-4 lg:px-8 py-4">
-          
-          {/* Logo */}
-          <div className={`flex items-center text-2xl font-bold cursor-pointer transition-colors duration-300 ${primaryColor}`}>
-            <span className="text-3xl mr-2">⚙️</span>
-            Trading Gear
-          </div>
-
-          {/* Desktop Navigation */}
-          <ul className="hidden lg:flex items-center space-x-8">
-            <li><a className={`${textPrimary} hover:text-cyan-400 font-medium cursor-pointer transition-colors duration-300`}>홈</a></li>
-            <li><a className={`${textPrimary} hover:text-cyan-400 font-medium cursor-pointer transition-colors duration-300`}>기능</a></li>
-            <li><a className={`${textPrimary} hover:text-cyan-400 font-medium cursor-pointer transition-colors duration-300`}>요금제</a></li>
-            <li><a className={`${primaryColor} font-medium cursor-pointer transition-colors duration-300`}>문서</a></li>
-            
-            {/* Theme Toggle */}
-            <li>
-              <button 
-                className={`w-10 h-10 rounded-full border-2 ${theme === 'dark' ? 'border-cyan-400/20 hover:border-cyan-400 hover:text-cyan-400' : 'border-blue-600/20 hover:border-blue-600 hover:text-blue-600'} ${textPrimary} transition-all duration-300 hover:rotate-180 flex items-center justify-center`}
-                onClick={toggleTheme}
-              >
-                {theme === 'dark' ? '🌙' : '☀️'}
-              </button>
-            </li>
-          </ul>
-
-          {/* Mobile Menu Button */}
-          <div className="lg:hidden flex items-center">
-            <button 
-              className="w-10 h-10 flex flex-col justify-center items-center space-y-1 focus:outline-none"
-              onClick={toggleMobileMenu}
-            >
-              <span className={`w-6 h-0.5 ${theme === 'dark' ? 'bg-white' : 'bg-slate-700'} transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></span>
-              <span className={`w-6 h-0.5 ${theme === 'dark' ? 'bg-white' : 'bg-slate-700'} transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''}`}></span>
-              <span className={`w-6 h-0.5 ${theme === 'dark' ? 'bg-white' : 'bg-slate-700'} transition-all duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></span>
-            </button>
-          </div>
-
-          {/* CTA Button */}
-          <button className={`hidden lg:block ${theme === 'dark' ? 'bg-gradient-to-r from-cyan-400 to-emerald-400 text-slate-900 hover:shadow-cyan-400/30' : 'bg-gradient-to-r from-blue-600 to-emerald-600 text-white hover:shadow-blue-600/30'} px-6 py-3 rounded-full font-bold hover:transform hover:-translate-y-1 hover:shadow-lg transition-all duration-300`}>
-            문서 보기
-          </button>
-        </nav>
-
-        {/* Mobile Menu */}
-        <div className={`lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-all duration-300 ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`} onClick={toggleMobileMenu}></div>
-
-        <div className={`lg:hidden fixed top-0 right-0 h-full w-80 max-w-[80vw] ${theme === 'dark' ? 'bg-slate-900/98' : 'bg-white/98'} backdrop-blur-lg border-l ${theme === 'dark' ? 'border-cyan-400/20' : 'border-blue-600/20'} z-50 transform transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-          
-          <div className="flex items-center justify-between p-6 border-b border-gray-200/20">
-            <div className={`flex items-center text-xl font-bold ${primaryColor}`}>
-              <span className="text-2xl mr-2">⚙️</span>
-              Trading Gear
-            </div>
-            <button className="w-8 h-8 flex items-center justify-center focus:outline-none" onClick={toggleMobileMenu}>
-              <span className={`w-6 h-0.5 ${theme === 'dark' ? 'bg-white' : 'bg-slate-700'} transition-all duration-300 rotate-45 absolute`}></span>
-              <span className={`w-6 h-0.5 ${theme === 'dark' ? 'bg-white' : 'bg-slate-700'} transition-all duration-300 -rotate-45 absolute`}></span>
-            </button>
-          </div>
-
-          <div className="flex flex-col h-full">
-            <ul className="px-6 py-8 space-y-6 flex-1">
-              <li><a className={`block ${textPrimary} hover:text-cyan-400 font-medium cursor-pointer transition-colors duration-300 py-3 text-lg border-b border-gray-200/10`}>홈</a></li>
-              <li><a className={`block ${textPrimary} hover:text-cyan-400 font-medium cursor-pointer transition-colors duration-300 py-3 text-lg border-b border-gray-200/10`}>기능</a></li>
-              <li><a className={`block ${textPrimary} hover:text-cyan-400 font-medium cursor-pointer transition-colors duration-300 py-3 text-lg border-b border-gray-200/10`}>요금제</a></li>
-              <li><a className={`block ${primaryColor} font-medium cursor-pointer transition-colors duration-300 py-3 text-lg border-b border-gray-200/10`}>문서</a></li>
-            </ul>
-
-            <div className="px-6 pb-8 space-y-4">
-              <div className="flex items-center justify-between py-4 border-t border-gray-200/20">
-                <span className={`${textPrimary} font-medium`}>테마 설정</span>
-                <button className={`w-12 h-12 rounded-full border-2 ${theme === 'dark' ? 'border-cyan-400/20 hover:border-cyan-400 hover:text-cyan-400' : 'border-blue-600/20 hover:border-blue-600 hover:text-blue-600'} ${textPrimary} transition-all duration-300 hover:rotate-180 flex items-center justify-center text-xl`} onClick={toggleTheme}>
-                  {theme === 'dark' ? '🌙' : '☀️'}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-
+      <Header/>
       {/* Main Content */}
-      <div className="flex pt-20">
+      <div className="max-w-7xl mx-auto px-4 lg:px-8 flex pt-20">
         
         {/* Sidebar */}
-        <aside className={`hidden lg:block w-80 h-screen sticky top-20 ${theme === 'dark' ? 'bg-slate-800/60' : 'bg-white/90'} backdrop-blur-lg border-r ${theme === 'dark' ? 'border-cyan-400/20' : 'border-blue-600/20'} overflow-y-auto`}>
-          <div className="p-6">
-            <h2 className={`text-lg font-bold ${textPrimary} mb-4`}>문서 목차</h2>
+        <aside className={`hidden lg:block w-52 h-screen sticky top-20 ${theme === 'dark' ? 'bg-slate-800/60' : 'bg-white/90'} backdrop-blur-lg border-r ${theme === 'dark' ? 'border-cyan-400/20' : 'border-blue-600/20'} overflow-y-auto`}>
+          <div className="p-4">
+            <h2 className={`text-md font-bold ${textPrimary} mb-4`}>문서 목차</h2>
             <nav className="space-y-2">
               {sidebarItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => setActiveSidebarItem(item.id)}
-                  className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center ${
+                  className={`w-full text-left text-sm px-3 py-2 rounded-lg transition-all duration-200 flex items-center ${
                     activeSidebarItem === item.id
                       ? `${theme === 'dark' ? 'bg-cyan-400/20 text-cyan-400' : 'bg-blue-600/20 text-blue-600'} font-medium`
                       : `${textSecondary} hover:${primaryColor.replace('text-', 'text-')} hover:bg-opacity-10`
                   }`}
                 >
-                  <span className="mr-3">{item.icon}</span>
+                  <span className="mr-2">{item.icon}</span>
                   {item.title}
                 </button>
               ))}
@@ -593,12 +494,12 @@ def create_dca_bot():
         </aside>
 
         {/* Content */}
-        <main className="flex-1 p-6 lg:p-12 max-w-4xl">
+        <main className="flex-1 p-6 lg:p-12 max-w-full">
           {renderContent()}
         </main>
       </div>
+      {/* Footer */}
+      <Footer onLinkClick={(linkName) => linkName} />
     </div>
   );
 };
-
-export default DocsPage;

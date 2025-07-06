@@ -1,10 +1,44 @@
-import React, { useState } from 'react';
+import  { useState, useEffect } from 'react';
+import { useThemeStore } from '~/stores/themeStore';
+import Header from '~/components/Header';
+import Footer from '~/components/Footer';
 import {Shield , Search, Calendar, User, Eye, Heart, Share2, TrendingUp, BookOpen, Bell, Filter, ChevronRight, Download, Play, Clock, Tag, MessageCircle, Bookmark, ArrowRight, BarChart3, Lightbulb, Zap } from 'lucide-react';
+import type { MetaFunction } from "@remix-run/node";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "블로그 - TRADING GEAR" },
+    { name: "blog", content: "AI 트레이딩의 새로운 시대" },
+  ];
+};
+
 
 export default function BlogInsights() {
+  const { theme, initializeTheme } = useThemeStore();
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedPost, setSelectedPost] = useState(null);
+
+  useEffect(() => {
+    initializeTheme();
+  }, [initializeTheme]);
+
+  const themeClasses = theme === 'dark' 
+    ? 'bg-gradient-to-br from-slate-900 to-slate-800 text-white'
+    : 'bg-gradient-to-br from-white to-slate-50 text-slate-900';
+
+  const headerClasses = theme === 'dark'
+    ? 'bg-[#1a1f36]/95 border-[#00d4ff]/20'
+    : 'bg-[#f8fafc]/95 border-[#0066cc]/20';
+
+  const bgPrimary = theme === 'dark' ? 'bg-[#1a1f36]' : 'bg-[#f8fafc]';
+  const bgSecondary = theme === 'dark' ? 'bg-gray-800/50' : 'bg-white/80';
+  const textPrimary = theme === 'dark' ? 'text-white' : 'text-slate-900';
+  const textSecondary = theme === 'dark' ? 'text-gray-300' : 'text-slate-600';
+  const textTertiary = theme === 'dark' ? 'text-gray-400' : 'text-slate-500';
+  const primaryColor = theme === 'dark' ? '#00d4ff' : '#0066cc';
+  const accentColor = theme === 'dark' ? '#00ff88' : '#00b894';
+  const borderColor = theme === 'dark' ? 'border-gray-700' : 'border-slate-200';
+  const hoverBorder = theme === 'dark' ? 'hover:border-[#00d4ff]/50' : 'hover:border-[#0066cc]/50';
 
   const blogPosts = [
     {
@@ -19,7 +53,7 @@ export default function BlogInsights() {
       likes: 342,
       tags: ['비트코인', '이더리움', '시장분석', 'AI예측'],
       featured: true,
-      image: '/api/placeholder/600/400',
+      image: '/blog/newsImg_01.jpg',
       content: `
         <h2>주요 시장 동향</h2>
         <p>2025년 1분기, 암호화폐 시장은 제도적 채택 증가와 규제 명확화로 새로운 전환점을 맞이하고 있습니다...</p>
@@ -48,7 +82,7 @@ export default function BlogInsights() {
       likes: 189,
       tags: ['그리드트레이딩', '자동화', '전략', '리스크관리'],
       featured: false,
-      image: '/api/placeholder/600/400',
+      image: '/blog/newsImg_02.jpg',
       content: `
         <h2>그리드 트레이딩이란?</h2>
         <p>그리드 트레이딩은 일정한 간격으로 매수/매도 주문을 배치하여 가격 변동성을 이용해 수익을 창출하는 전략입니다...</p>
@@ -66,7 +100,7 @@ export default function BlogInsights() {
       likes: 278,
       tags: ['업데이트', 'DeFi', '새기능', '유동성채굴'],
       featured: false,
-      image: '/api/placeholder/600/400',
+      image: '/blog/newsImg_03.jpg',
       content: `
         <h2>주요 업데이트 내용</h2>
         <p>이번 v3.2 업데이트에서는 DeFi 시장의 급성장에 맞춰 새로운 전략들을 추가했습니다...</p>
@@ -84,7 +118,7 @@ export default function BlogInsights() {
       likes: 145,
       tags: ['중앙은행', '통화정책', '매크로', '상관관계'],
       featured: false,
-      image: '/api/placeholder/600/400',
+      image: '/blog/newsImg_04.jpg',
       content: `
         <h2>중앙은행 정책의 영향</h2>
         <p>전통 금융시장과 암호화폐 시장의 상관관계가 점차 높아지고 있습니다...</p>
@@ -102,7 +136,7 @@ export default function BlogInsights() {
       likes: 203,
       tags: ['RSI', '다이버전스', '기술적분석', '진입타이밍'],
       featured: false,
-      image: '/api/placeholder/600/400',
+      image: '/blog/newsImg_05.jpg',
       content: `
         <h2>RSI 다이버전스란?</h2>
         <p>RSI 다이버전스는 가격과 RSI 지표 간의 방향성 차이를 의미합니다...</p>
@@ -120,7 +154,7 @@ export default function BlogInsights() {
       likes: 89,
       tags: ['모바일', 'UI/UX', '업데이트', '사용성'],
       featured: false,
-      image: '/api/placeholder/600/400',
+      image: '/blog/newsImg_06.jpg',
       content: `
         <h2>주요 개선사항</h2>
         <p>이번 업데이트에서는 사용자 경험을 대폭 개선했습니다...</p>
@@ -156,17 +190,17 @@ export default function BlogInsights() {
   };
 
   const PostCard = ({ post, featured = false }) => (
-    <article className={`bg-gray-800/50 backdrop-blur-sm rounded-lg border border-gray-700 hover:border-blue-500/50 transition-all duration-300 overflow-hidden ${featured ? 'col-span-full lg:col-span-2' : ''}`}>
-      <div className="aspect-video bg-gray-700 relative overflow-hidden">
+    <article className={`${bgSecondary} backdrop-blur-sm rounded-lg border ${borderColor} ${hoverBorder} transition-all duration-300 overflow-hidden ${featured ? 'col-span-full lg:col-span-2' : ''}`}>
+      <div className={`aspect-video ${theme === 'dark' ? 'bg-gray-700' : 'bg-slate-200'} relative overflow-hidden`}>
         <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
         <div className="absolute top-4 left-4">
-          <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+          <span className={`px-3 py-1 rounded-full text-sm font-medium ${theme === 'dark' ? 'bg-[#00d4ff] text-black' : 'bg-[#0066cc] text-white'}`}>
             {categories.find(cat => cat.key === post.category)?.label || '기타'}
           </span>
         </div>
         {featured && (
           <div className="absolute top-4 right-4">
-            <span className="bg-gradient-to-r from-yellow-400 to-orange-400 text-black px-3 py-1 rounded-full text-sm font-bold">
+            <span className={`px-3 py-1 rounded-full text-sm font-bold ${theme === 'dark' ? 'bg-gradient-to-r from-[#00ff88] to-emerald-400 text-black' : 'bg-gradient-to-r from-[#00b894] to-emerald-500 text-white'}`}>
               특집
             </span>
           </div>
@@ -174,7 +208,7 @@ export default function BlogInsights() {
       </div>
       
       <div className="p-6">
-        <div className="flex items-center gap-4 text-sm text-gray-400 mb-3">
+        <div className={`flex items-center gap-4 text-sm ${textTertiary} mb-3`}>
           <div className="flex items-center gap-1">
             <User className="w-4 h-4" />
             {post.author}
@@ -189,24 +223,24 @@ export default function BlogInsights() {
           </div>
         </div>
         
-        <h3 className={`font-bold text-gray-100 mb-3 hover:text-blue-400 cursor-pointer transition-colors ${featured ? 'text-2xl' : 'text-xl'}`}>
+        <h3 className={`font-bold ${textPrimary} mb-3 cursor-pointer transition-colors ${featured ? 'text-2xl' : 'text-xl'} ${theme === 'dark' ? 'hover:text-[#00d4ff]' : 'hover:text-[#0066cc]'}`}>
           {post.title}
         </h3>
         
-        <p className="text-gray-300 mb-4 line-clamp-3">
+        <p className={`${textSecondary} mb-4 line-clamp-3`}>
           {post.excerpt}
         </p>
         
         <div className="flex flex-wrap gap-2 mb-4">
           {post.tags.map((tag, index) => (
-            <span key={index} className="bg-gray-700 text-gray-300 px-2 py-1 rounded text-sm">
+            <span key={index} className={`${theme === 'dark' ? 'bg-gray-700 text-gray-300' : 'bg-slate-100 text-slate-600'} px-2 py-1 rounded text-sm`}>
               #{tag}
             </span>
           ))}
         </div>
         
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4 text-sm text-gray-400">
+          <div className={`flex items-center gap-4 text-sm ${textTertiary}`}>
             <div className="flex items-center gap-1">
               <Eye className="w-4 h-4" />
               {post.views.toLocaleString()}
@@ -218,13 +252,13 @@ export default function BlogInsights() {
           </div>
           
           <div className="flex items-center gap-2">
-            <button className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors">
+            <button className={`p-2 rounded-lg ${theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-slate-200 hover:bg-slate-300'} transition-colors`}>
               <Bookmark className="w-4 h-4" />
             </button>
-            <button className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors">
+            <button className={`p-2 rounded-lg ${theme === 'dark' ? 'bg-gray-700 hover:bg-gray-600' : 'bg-slate-200 hover:bg-slate-300'} transition-colors`}>
               <Share2 className="w-4 h-4" />
             </button>
-            <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors">
+            <button className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors font-semibold ${theme === 'dark' ? 'bg-[#00d4ff] hover:bg-cyan-400 text-black' : 'bg-[#0066cc] hover:bg-blue-700 text-white'}`}>
               읽기
               <ArrowRight className="w-4 h-4" />
             </button>
@@ -235,29 +269,33 @@ export default function BlogInsights() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className={`min-h-screen ${bgPrimary} ${textPrimary}`}>
+      <Header />
+      
+      {/* Main Content with top padding for fixed header */}
+      <div className="pt-20">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/20 to-pink-900/20"></div>
+        <div className={`absolute inset-0 ${theme === 'dark' ? 'bg-gradient-to-br from-cyan-500/10 via-blue-500/10 to-emerald-500/10' : 'bg-gradient-to-br from-blue-100/50 via-cyan-50/50 to-emerald-50/50'}`}></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <h1 className={`text-4xl md:text-6xl font-bold mb-6 ${theme === 'dark' ? 'bg-gradient-to-r from-[#00d4ff] via-cyan-400 to-[#00ff88]' : 'bg-gradient-to-r from-[#0066cc] via-blue-500 to-[#00b894]'} bg-clip-text text-transparent`}>
               인사이트 & 블로그
             </h1>
-            <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+            <p className={`text-xl md:text-2xl ${textSecondary} mb-8 max-w-3xl mx-auto`}>
               최신 시장 동향부터 전략 개발 팁까지, 트레이딩 성공을 위한 모든 정보
             </p>
             
             {/* Search Bar */}
             <div className="max-w-2xl mx-auto relative">
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Search className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 ${textTertiary}`} />
                 <input
                   type="text"
                   placeholder="검색어를 입력하세요..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-lg focus:outline-none focus:border-blue-500 text-white placeholder-gray-400"
+                  className={`w-full pl-12 pr-4 py-3 ${bgSecondary} backdrop-blur-sm border ${borderColor} rounded-lg focus:outline-none ${theme === 'dark' ? 'focus:border-[#00d4ff]' : 'focus:border-[#0066cc]'} ${textPrimary} ${theme === 'dark' ? 'placeholder-gray-400' : 'placeholder-slate-400'}`}
                 />
               </div>
             </div>
@@ -268,25 +306,25 @@ export default function BlogInsights() {
       {/* Quick Stats */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700 text-center">
-            <BookOpen className="w-8 h-8 text-blue-400 mx-auto mb-2" />
-            <div className="text-2xl font-bold text-blue-400">150+</div>
-            <div className="text-gray-400">게시글</div>
+          <div className={`${bgSecondary} backdrop-blur-sm rounded-lg p-6 border ${borderColor} text-center`}>
+            <BookOpen className={`w-8 h-8 mx-auto mb-2`} style={{ color: primaryColor }} />
+            <div className="text-2xl font-bold mb-1" style={{ color: primaryColor }}>150+</div>
+            <div className={textTertiary}>게시글</div>
           </div>
-          <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700 text-center">
-            <Eye className="w-8 h-8 text-purple-400 mx-auto mb-2" />
-            <div className="text-2xl font-bold text-purple-400">500K+</div>
-            <div className="text-gray-400">월간 조회수</div>
+          <div className={`${bgSecondary} backdrop-blur-sm rounded-lg p-6 border ${borderColor} text-center`}>
+            <Eye className={`w-8 h-8 mx-auto mb-2`} style={{ color: accentColor }} />
+            <div className="text-2xl font-bold mb-1" style={{ color: accentColor }}>500K+</div>
+            <div className={textTertiary}>월간 조회수</div>
           </div>
-          <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700 text-center">
-            <MessageCircle className="w-8 h-8 text-pink-400 mx-auto mb-2" />
-            <div className="text-2xl font-bold text-pink-400">25K+</div>
-            <div className="text-gray-400">커뮤니티 멤버</div>
+          <div className={`${bgSecondary} backdrop-blur-sm rounded-lg p-6 border ${borderColor} text-center`}>
+            <MessageCircle className={`w-8 h-8 mx-auto mb-2`} style={{ color: theme === 'dark' ? '#00d4ff' : '#0066cc' }} />
+            <div className="text-2xl font-bold mb-1" style={{ color: theme === 'dark' ? '#00d4ff' : '#0066cc' }}>25K+</div>
+            <div className={textTertiary}>커뮤니티 멤버</div>
           </div>
-          <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700 text-center">
-            <TrendingUp className="w-8 h-8 text-green-400 mx-auto mb-2" />
-            <div className="text-2xl font-bold text-green-400">92%</div>
-            <div className="text-gray-400">콘텐츠 만족도</div>
+          <div className={`${bgSecondary} backdrop-blur-sm rounded-lg p-6 border ${borderColor} text-center`}>
+            <TrendingUp className={`w-8 h-8 mx-auto mb-2`} style={{ color: accentColor }} />
+            <div className="text-2xl font-bold mb-1" style={{ color: accentColor }}>92%</div>
+            <div className={textTertiary}>콘텐츠 만족도</div>
           </div>
         </div>
       </div>
@@ -295,8 +333,8 @@ export default function BlogInsights() {
       {featuredPosts.length > 0 && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex items-center gap-3 mb-8">
-            <Zap className="w-6 h-6 text-yellow-400" />
-            <h2 className="text-2xl font-bold">특집 기사</h2>
+            <Zap className="w-6 h-6" style={{ color: accentColor }} />
+            <h2 className={`text-2xl font-bold ${textPrimary}`}>특집 기사</h2>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {featuredPosts.map((post) => (
@@ -316,13 +354,13 @@ export default function BlogInsights() {
               onClick={() => setActiveCategory(category.key)}
               className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
                 activeCategory === category.key
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                  ? (theme === 'dark' ? 'bg-[#00d4ff] text-black shadow-lg shadow-[#00d4ff]/25' : 'bg-[#0066cc] text-white shadow-lg shadow-[#0066cc]/25')
+                  : (theme === 'dark' ? 'bg-gray-800 text-gray-300 hover:bg-gray-700' : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200')
               }`}
             >
               {category.icon}
               {category.label}
-              <span className="bg-gray-700 text-gray-300 px-2 py-1 rounded-full text-sm">
+              <span className={`px-2 py-1 rounded-full text-sm ${theme === 'dark' ? 'bg-gray-700 text-gray-300' : 'bg-slate-100 text-slate-600'}`}>
                 {category.count}
               </span>
             </button>
@@ -338,30 +376,34 @@ export default function BlogInsights() {
 
         {/* Load More Button */}
         <div className="text-center mt-12">
-          <button className="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-lg font-semibold transition-colors duration-300">
+          <button className={`px-8 py-3 rounded-lg font-semibold transition-colors duration-300 ${theme === 'dark' ? 'bg-[#00d4ff] hover:bg-cyan-400 text-black' : 'bg-[#0066cc] hover:bg-blue-700 text-white'}`}>
             더 많은 글 보기
           </button>
         </div>
       </div>
 
       {/* Newsletter Signup */}
-      <div className="bg-gray-800/50 backdrop-blur-sm py-16">
+      <div className={`${theme === 'dark' ? 'bg-gray-800/50' : 'bg-slate-50'} backdrop-blur-sm py-16`}>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">주간 인사이트 뉴스레터</h2>
-          <p className="text-gray-300 mb-8">
+          <h2 className={`text-3xl font-bold mb-4 ${textPrimary}`}>주간 인사이트 뉴스레터</h2>
+          <p className={`${textSecondary} mb-8`}>
             매주 화요일, 시장 분석과 전략 인사이트를 이메일로 받아보세요
           </p>
           <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
             <input
               type="email"
               placeholder="이메일 주소"
-              className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-blue-500 text-white placeholder-gray-400"
+              className={`flex-1 px-4 py-3 border rounded-lg focus:outline-none ${textPrimary} ${
+                theme === 'dark' 
+                ? 'bg-gray-800 border-gray-700 focus:border-[#00d4ff] placeholder-gray-400' 
+                : 'bg-white border-slate-300 focus:border-[#0066cc] placeholder-slate-400'
+              }`}
             />
-            <button className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold transition-colors duration-300">
+            <button className={`px-6 py-3 rounded-lg font-semibold transition-colors duration-300 ${theme === 'dark' ? 'bg-[#00d4ff] hover:bg-cyan-400 text-black' : 'bg-[#0066cc] hover:bg-blue-700 text-white'}`}>
               구독하기
             </button>
           </div>
-          <p className="text-sm text-gray-400 mt-4">
+          <p className={`text-sm ${textTertiary} mt-4`}>
             언제든지 구독 취소 가능 · 스팸 없음 · 개인정보 보호
           </p>
         </div>
@@ -369,50 +411,50 @@ export default function BlogInsights() {
 
       {/* Popular Resources */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <h2 className="text-3xl font-bold mb-8 text-center">인기 리소스</h2>
+        <h2 className={`text-3xl font-bold mb-8 text-center ${textPrimary}`}>인기 리소스</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[
             {
               title: '트레이딩 기초 가이드',
               description: '초보자를 위한 완벽한 시작 가이드',
-              icon: <BookOpen className="w-8 h-8 text-blue-400" />,
+              icon: <BookOpen className="w-8 h-8" style={{ color: primaryColor }} />,
               downloads: '15.2K',
               type: 'PDF'
             },
             {
               title: '리스크 관리 체크리스트',
               description: '손실을 최소화하는 핵심 원칙들',
-              icon: <Shield className="w-8 h-8 text-purple-400" />,
+              icon: <Shield className="w-8 h-8" style={{ color: accentColor }} />,
               downloads: '8.7K',
               type: 'PDF'
             },
             {
               title: '시장 분석 템플릿',
               description: '체계적인 시장 분석을 위한 도구',
-              icon: <BarChart3 className="w-8 h-8 text-green-400" />,
+              icon: <BarChart3 className="w-8 h-8" style={{ color: theme === 'dark' ? '#00d4ff' : '#0066cc' }} />,
               downloads: '12.1K',
               type: 'Excel'
             }
           ].map((resource, index) => (
-            <div key={index} className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700 hover:border-blue-500/50 transition-all duration-300">
+            <div key={index} className={`${bgSecondary} backdrop-blur-sm rounded-lg p-6 border ${borderColor} ${hoverBorder} transition-all duration-300`}>
               <div className="flex items-center gap-4 mb-4">
                 {resource.icon}
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-100">{resource.title}</h3>
-                  <p className="text-gray-400">{resource.description}</p>
+                  <h3 className={`text-xl font-semibold ${textPrimary}`}>{resource.title}</h3>
+                  <p className={textSecondary}>{resource.description}</p>
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4 text-sm text-gray-400">
+                <div className={`flex items-center gap-4 text-sm ${textTertiary}`}>
                   <div className="flex items-center gap-1">
                     <Download className="w-4 h-4" />
                     {resource.downloads}
                   </div>
-                  <span className="bg-gray-700 px-2 py-1 rounded text-xs">
+                  <span className={`px-2 py-1 rounded text-xs ${theme === 'dark' ? 'bg-gray-700' : 'bg-slate-100'}`}>
                     {resource.type}
                   </span>
                 </div>
-                <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-medium transition-colors duration-300">
+                <button className={`px-4 py-2 rounded-lg font-medium transition-colors duration-300 ${theme === 'dark' ? 'bg-[#00d4ff] hover:bg-cyan-400 text-black' : 'bg-[#0066cc] hover:bg-blue-700 text-white'}`}>
                   다운로드
                 </button>
               </div>
@@ -422,22 +464,27 @@ export default function BlogInsights() {
       </div>
 
       {/* CTA Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 py-16">
+      <div className={`py-16 bg-gradient-to-r from-[#0066cc] to-[#00b894]`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">지금 시작하세요</h2>
-          <p className="text-xl text-blue-100 mb-8">
+          <h2 className={`text-3xl font-bold mb-4 text-white`}>지금 시작하세요</h2>
+          <p className={`text-xl mb-8 text-blue-100`}>
             인사이트를 실제 수익으로 바꿔보세요
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <button className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-300">
+            <button className={`px-8 py-3 rounded-lg font-semibold transition-colors duration-300 bg-white text-[#0066cc] hover:bg-gray-100`}>
               무료 체험 시작
             </button>
-            <button className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors duration-300">
+            <button className={`border-2 border-white text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-300 bg-transparent hover:bg-white hover:text-[#0066cc]`}>
               전문가 상담
             </button>
           </div>
         </div>
       </div>
+      
+      </div> {/* Main Content Close */}
+      
+      {/* Footer */}
+      <Footer onLinkClick={(linkName) => linkName} />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import type { MetaFunction } from "@remix-run/node";
 import { useEffect } from 'react';
 import Header from '~/components/Header';
 import Footer from '~/components/Footer';
+import { useNavigate } from 'react-router-dom';
 import { useThemeStore } from '~/stores/themeStore';
 
 export const meta: MetaFunction = () => {
@@ -12,6 +13,7 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index(){
+  const navigate = useNavigate();
   const { theme, isClient, initializeTheme } = useThemeStore();
 
   useEffect(() => {
@@ -88,12 +90,13 @@ export default function Index(){
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <button 
               className={`${theme === 'dark' ? 'bg-gradient-to-r from-cyan-400 to-emerald-400 text-slate-900 hover:shadow-cyan-400/30' : 'bg-gradient-to-r from-blue-600 to-emerald-600 text-white hover:shadow-blue-600/30'} px-8 py-4 rounded-full font-bold text-lg hover:transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300`}
+              onClick={() => navigate('/dashboard')}
             >
               7일 무료 체험
             </button>
             <button 
               className={`border-2 ${theme === 'dark' ? 'border-cyan-400 text-cyan-400 hover:bg-cyan-400' : 'border-blue-600 text-blue-600 hover:bg-blue-600'} hover:text-slate-900 px-8 py-4 rounded-full font-bold text-lg transition-all duration-300`}
-              onClick={() => scrollToSection('demo')}
+              onClick={() => navigate('/dashboard')}
             >
               데모 보기
             </button>
@@ -158,7 +161,7 @@ export default function Index(){
           <h2 className={`text-3xl lg:text-5xl font-bold mb-4 ${textPrimary}`}>지금 시작하세요!</h2>
           <p className={`text-xl ${textSecondary} mb-8`}>7일 무료 체험으로 Trading Gear의 모든 기능을 경험해보세요. 신용카드 등록 없이 바로 시작 가능합니다.</p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <button className={`${theme === 'dark' ? 'bg-gradient-to-r from-cyan-400 to-emerald-400 text-slate-900 hover:shadow-cyan-400/40' : 'bg-gradient-to-r from-blue-600 to-emerald-600 text-white hover:shadow-blue-600/40'} px-8 py-4 rounded-full font-bold text-lg hover:transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300`}>
+            <button className={`${theme === 'dark' ? 'bg-gradient-to-r from-cyan-400 to-emerald-400 text-slate-900 hover:shadow-cyan-400/40' : 'bg-gradient-to-r from-blue-600 to-emerald-600 text-white hover:shadow-blue-600/40'} px-8 py-4 rounded-full font-bold text-lg hover:transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300`} onClick={() => navigate('/dashboard')}>
               무료 체험 시작하기
             </button>
             <button className={`border-2 ${theme === 'dark' ? 'border-cyan-400 text-cyan-400 hover:bg-cyan-400' : 'border-blue-600 text-blue-600 hover:bg-blue-600'} hover:text-slate-900 px-8 py-4 rounded-full font-bold text-lg transition-all duration-300`}>

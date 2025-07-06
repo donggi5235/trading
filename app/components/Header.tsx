@@ -18,7 +18,7 @@ export default function Header() {
 
   return (
     <header className={`fixed top-0 w-full backdrop-blur-lg z-50 border-b transition-all duration-300 ${headerClasses}`}>
-      <nav className="max-w-6xl mx-auto flex justify-between items-center px-4 lg:px-8 py-4">
+      <nav className="max-w-7xl mx-auto flex justify-between items-center px-4 lg:px-8 py-4">
 
         {/* Logo */}
         <a

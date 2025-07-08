@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useThemeStore } from '~/stores/themeStore';
+import { useNavigate } from 'react-router-dom';
 
 export default function Header() {
   const { theme, toggleTheme } = useThemeStore();
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -65,7 +67,7 @@ export default function Header() {
         {/* CTA Button - Desktop */}
         <button
           className={`hidden lg:block ${theme === 'dark' ? 'bg-gradient-to-r from-cyan-400 to-emerald-400 text-slate-900 hover:shadow-cyan-400/30' : 'bg-gradient-to-r from-blue-600 to-emerald-600 text-white hover:shadow-blue-600/30'} px-6 py-3 rounded-full font-bold hover:transform hover:-translate-y-1 hover:shadow-lg transition-all duration-300`}
-          onClick={() => location.href = '/dashboard'}
+          onClick={() => navigate('/login')}
         >
           무료 체험 시작
         </button>
@@ -118,7 +120,7 @@ export default function Header() {
 
             <button
               className={`w-full ${theme === 'dark' ? 'bg-gradient-to-r from-cyan-400 to-emerald-400 text-slate-900 hover:shadow-cyan-400/30' : 'bg-gradient-to-r from-blue-600 to-emerald-600 text-white hover:shadow-blue-600/30'} px-6 py-4 rounded-full font-bold text-lg hover:transform hover:-translate-y-1 hover:shadow-lg transition-all duration-300`}
-              onClick={() => location.href = '/dashboard'}
+              onClick={() => navigate('/login')}
             >
               무료 체험 시작
             </button>

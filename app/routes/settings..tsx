@@ -37,9 +37,9 @@ const AccountSettings = () => {
   const [newApiKey, setNewApiKey] = useState('');
 
   const tabs = [
-    { id: 'account', label: 'Account details' },
-    { id: 'plan', label: 'Plan' },
-    { id: 'security', label: 'Security' }
+    { id: 'account', label: '계정 정보' },
+    { id: 'plan', label: '요금제' },
+    { id: 'security', label: '보안' }
   ];
 
   const handleCopyApiKey = () => {
@@ -84,7 +84,7 @@ const AccountSettings = () => {
               <button className="mr-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors" onClick={() => handleGoBack()}>
                 <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
               </button>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Settings</h1>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">설정</h1>
             </div>
           </div>
         </div>
@@ -149,7 +149,7 @@ const AccountSettings = () => {
                   onClick={() => setEditingPassword(!editingPassword)}
                   className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
                 >
-                  {editingPassword ? 'Cancel' : 'Change Password'}
+                  {editingPassword ? '취소' : '비밀번호 변경'}
                 </button>
               </div>
 
@@ -172,7 +172,7 @@ const AccountSettings = () => {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Current Password
+                      현재 비밀번호
                     </label>
                     <input
                       type="password"
@@ -184,7 +184,7 @@ const AccountSettings = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      New Password
+                      새 비밀번호
                     </label>
                     <input
                       type="password"
@@ -196,7 +196,7 @@ const AccountSettings = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Confirm New Password
+                      새 비밀번호 확인
                     </label>
                     <input
                       type="password"
@@ -211,13 +211,13 @@ const AccountSettings = () => {
                       onClick={() => setEditingPassword(false)}
                       className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
                     >
-                      Cancel
+                      취소
                     </button>
                     <button
                       onClick={handlePasswordUpdate}
                       className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
                     >
-                      Update Password
+                      비밀번호 변경
                     </button>
                   </div>
                 </div>
@@ -283,13 +283,13 @@ const AccountSettings = () => {
                       onClick={() => setEditingApiKey(false)}
                       className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
                     >
-                      Cancel
+                      취소
                     </button>
                     <button
                       onClick={handleApiKeyUpdate}
                       className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
                     >
-                      Update API Key
+                      API 키 변경
                     </button>
                   </div>
                 </div>
@@ -300,17 +300,17 @@ const AccountSettings = () => {
             <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-red-200 dark:border-red-700">
               <div className="flex items-center mb-4">
                 <AlertTriangle className="w-5 h-5 text-red-500 mr-3" />
-                <h3 className="text-lg font-medium text-red-600 dark:text-red-400">Danger Zone</h3>
+                <h3 className="text-lg font-medium text-red-600 dark:text-red-400">주의</h3>
               </div>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                Once you delete your account, there is no going back. Please be certain.
+                계정을 삭제하면 되돌릴 수 없습니다. 신중하게 결정해주세요.
               </p>
               <button
                 onClick={() => setShowDeleteModal(true)}
                 className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center"
               >
                 <Trash2 className="w-4 h-4 mr-2" />
-                Delete Account
+                계정 삭제
               </button>
             </div>
           </div>
@@ -323,7 +323,7 @@ const AccountSettings = () => {
               {tabs.find(tab => tab.id === activeTab)?.label}
             </h3>
             <p className="text-gray-600 dark:text-gray-400">
-              This section is coming soon...
+              이 섹션은 준비 중입니다.
             </p>
           </div>
         )}
@@ -335,23 +335,23 @@ const AccountSettings = () => {
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
             <div className="flex items-center mb-4">
               <AlertTriangle className="w-6 h-6 text-red-500 mr-3" />
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">Delete Account</h3>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">계정 삭제</h3>
             </div>
             <p className="text-gray-600 dark:text-gray-400 mb-6">
-              Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.
+              계정을 삭제하면 되돌릴 수 없습니다. 신중하게 결정해주세요.
             </p>
             <div className="flex justify-end space-x-3">
               <button
                 onClick={() => setShowDeleteModal(false)}
                 className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100"
               >
-                Cancel
+                취소
               </button>
               <button
                 onClick={handleDeleteAccount}
                 className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors"
               >
-                Delete Account
+                계정 삭제
               </button>
             </div>
           </div>

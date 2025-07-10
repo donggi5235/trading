@@ -179,7 +179,7 @@ const AccountSettings = () => {
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
                       className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg px-3 py-2 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Enter current password"
+                      placeholder="현재 비밀번호"
                     />
                   </div>
                   <div>
@@ -191,7 +191,7 @@ const AccountSettings = () => {
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg px-3 py-2 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Enter new password"
+                      placeholder="새 비밀번호"
                     />
                   </div>
                   <div>
@@ -203,7 +203,7 @@ const AccountSettings = () => {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg px-3 py-2 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Confirm new password"
+                      placeholder="새 비밀번호 확인"
                     />
                   </div>
                   <div className="flex justify-end space-x-3">
@@ -237,14 +237,14 @@ const AccountSettings = () => {
                     className="px-3 py-1 text-sm font-medium text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors flex items-center"
                   >
                     {copied ? <Check className="w-4 h-4 mr-1" /> : <Copy className="w-4 h-4 mr-1" />}
-                    {copied ? 'Copied!' : 'Copy'}
+                    {copied ? '복사됨' : '복사'}
                   </button>
                   <button
                     onClick={() => setEditingApiKey(!editingApiKey)}
                     className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors flex items-center"
                   >
                     <Edit className="w-4 h-4 mr-1" />
-                    {editingApiKey ? 'Cancel' : 'Edit'}
+                    {editingApiKey ? '취소' : '수정'}
                   </button>
                 </div>
               </div>

@@ -1,4 +1,3 @@
-
 import { useState, useContext, createContext, useEffect } from 'react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { 
@@ -14,30 +13,16 @@ Activity,
 Shield,
 ArrowUpRight,
 ArrowDownRight,
-Moon,
-Sun,
-Settings,
-Bell,
-LogOut,
-Home,
-Wallet,
-Target,
-BarChart4,
-Users,
-Search,
-Menu,
-X
 } from 'lucide-react';
 
 import { useThemeStore } from '~/stores/themeStore';
+import DashHeader from '~/components/dashHeader';
 
 // Theme Context
 interface ThemeContextType {
   theme: string;
 }
 const ThemeContext = createContext<ThemeContextType | null>(null);
-
-
 
 const ThemeProvider = ({ children }: any) => {
   const { theme } = useThemeStore();
@@ -62,6 +47,35 @@ return context;
 const TradingDashboard = () => {
 const [sidebarOpen, setSidebarOpen] = useState(false);
 const { theme, toggleTheme } = useThemeStore();
+
+// 화면 크기에 따른 사이드바 초기 상태 설정
+useEffect(() => {
+  const handleResize = () => {
+    if (window.innerWidth >= 1024) { // lg 브레이크포인트
+      setSidebarOpen(true); // PC에서는 열림
+    } else {
+      setSidebarOpen(false); // 모바일에서는 닫힘
+    }
+  };
+
+  // 초기 설정
+  handleResize();
+
+  // 윈도우 리사이즈 이벤트 리스너
+  window.addEventListener('resize', handleResize);
+
+  return () => {
+    window.removeEventListener('resize', handleResize);
+  };
+}, []);
+
+// DashHeader 컴포넌트에서 사이드바와 헤더 분리
+const dashComponents = DashHeader({
+  theme,
+  toggleTheme,
+  sidebarOpen,
+  setSidebarOpen
+});
 
 // 화면 크기에 따른 사이드바 초기 상태 설정
 useEffect(() => {
@@ -118,150 +132,16 @@ const recentTrades = [
   { id: 4, symbol: 'AAPL', type: 'SELL', amount: 75, price: 195.3, time: '14:05', status: 'completed' },
 ];
 
-// Sidebar Navigation Items
-const sidebarItems = [
-  { icon: Home, label: '대시보드', active: true },
-  { icon: BarChart4, label: '거래', active: false },
-  { icon: Wallet, label: '지갑', active: false },
-  { icon: Target, label: '포트폴리오', active: false },
-  { icon: Activity, label: '분석', active: false },
-  { icon: Users, label: '소셜트레이딩', active: false },
-  { icon: Settings, label: '설정', active: false },
-];
-
 return (
   <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
-    {/* Backdrop for mobile only */}
-    {sidebarOpen && (
-      <div 
-        className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-        onClick={() => setSidebarOpen(false)}
-      />
-    )}
-
-    {/* Sidebar */}
-    <div className={`fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-300 ease-in-out 
-      ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
-      ${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-r`}>
-      <div className="flex items-center justify-between p-6">
-        <div className="flex items-center">
-          <h1 className={`text-xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
-              <a href="/">{theme === 'dark' ? <img className="h-[44px]" src="/logo-white.png" alt="" /> : <img className="h-[44px]" src="/logo.png" alt="" />}</a>
-            </h1>
-        </div>
-        <button
-          onClick={() => setSidebarOpen(false)}
-          className={`lg:hidden ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
-        >
-          <X className="w-6 h-6" />
-        </button>
-      </div>
-
-      <nav className="mt-8">
-        {sidebarItems.map((item, index) => (
-          <a
-            key={index}
-            href="#"
-            className={`flex items-center px-6 py-3 text-sm font-medium transition-colors ${
-              item.active
-                ? theme === 'dark' 
-                  ? 'bg-gray-700 text-cyan-400 border-r-2 border-cyan-400' 
-                  : 'bg-blue-50 text-blue-600 border-r-2 border-blue-600'
-                : theme === 'dark' 
-                  ? 'text-gray-300 hover:bg-gray-700 hover:text-white' 
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-            }`}
-          >
-            <item.icon className="w-5 h-5 mr-3" />
-            {item.label}
-          </a>
-        ))}
-      </nav>
-    </div>
+    {/* Sidebar Component */}
+    {dashComponents.sidebar}
 
     {/* Main Content */}
     <div className={`transition-all duration-300 ${sidebarOpen ? 'lg:ml-64' : 'lg:ml-0'}`}>
       {/* Header */}
-      <header className={`${theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} shadow-sm border-b`}>
-        <div className="px-4 lg:px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <button
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                className={`mr-3 lg:mr-4 ${theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
-              >
-                <Menu className="w-6 h-6" />
-              </button>
-              <h2 className={`text-lg lg:text-xl font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
-                대시보드
-              </h2>
-            </div>
-            
-            <div className="flex items-center space-x-2 lg:space-x-4">
-              {/* 검색바 - 데스크톱에만 표시 */}
-              <div className="relative hidden lg:block">
-                <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} />
-                <input
-                  type="text"
-                  placeholder="검색..."
-                  className={`pl-10 pr-4 py-2 rounded-lg border focus:ring-2 focus:ring-cyan-500 focus:border-transparent ${
-                    theme === 'dark' 
-                      ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' 
-                      : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500'
-                  }`}
-                />
-              </div>
-
-              {/* 모바일 검색 아이콘 */}
-              <button className={`lg:hidden p-2 rounded-lg transition-colors ${
-                theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'
-              }`}>
-                <Search className="w-5 h-5" />
-              </button>
-              
-              <button
-                onClick={toggleTheme}
-                className={`p-2 rounded-lg transition-colors ${
-                  theme === 'dark' 
-                    ? 'bg-gray-700 text-yellow-400 hover:bg-gray-600' 
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
-              >
-                {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
-              
-              <button className={`p-2 rounded-lg transition-colors ${
-                theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'
-              }`}>
-                <Bell className="w-5 h-5" />
-              </button>
-              
-              <div className="flex items-center space-x-2 lg:space-x-3">
-                {/* 프로필 텍스트 - 데스크톱에만 표시 */}
-                <div className={`text-right hidden lg:block ${theme === 'dark' ? 'text-white' : 'text-gray-700'}`}>
-                  <div className="text-sm font-medium">트레이더님</div>
-                  <div className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>프리미엄 회원</div>
-                </div>
-                
-                {/* 프로필 아바타 */}
-                <div className="w-8 h-8 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center">
-                  <User className="w-4 h-4 text-white" />
-                </div>
-                
-                {/* 로그아웃 버튼 - 데스크톱에만 표시 */}
-                <button 
-                  className={`hidden lg:block p-2 rounded-lg transition-colors ${
-                    theme === 'dark' ? 'text-gray-400 hover:text-red-400' : 'text-gray-600 hover:text-red-600'
-                  }`}
-                >
-                  <LogOut className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-
+      {dashComponents.header}
+      
       {/* Dashboard Content */}
       <main className="p-6">
         {/* 계좌 정보 카드들 */}

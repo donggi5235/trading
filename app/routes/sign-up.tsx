@@ -22,6 +22,7 @@ export default function SignUp() {
     email: '',
     password: '',
     confirmPassword: '',
+    apiKey: '',
     agreeToTerms: false
   });
 
@@ -70,10 +71,11 @@ export default function SignUp() {
     : 'bg-gradient-to-r from-blue-600 to-emerald-600 text-white hover:from-blue-700 hover:to-emerald-700';
 
   return (
-    <div className={`min-h-screen transition-all duration-300 ${themeClasses}`}>
+    <div className={`${themeClasses}`}>
     {/* Header */}
     <Header/>
-    <div className={`min-h-screen flex items-center justify-center px-4 py-12 transition-all duration-300 ${themeClasses}`}>
+    <div className="h-[80px]"></div>
+    <div className={`flex items-center justify-center px-4 py-24 transition-all duration-300 ${themeClasses}`}>
       <div className={`w-full max-w-md space-y-8 p-8 rounded-2xl shadow-2xl border transition-all duration-300 ${cardClasses}`}>
         
         <div className="text-center">
@@ -81,7 +83,7 @@ export default function SignUp() {
         </div>
 
         {/* Form */}
-        <form className="space-y-6" onSubmit={handleSubmit}>
+        <form className="space-y-4" onSubmit={handleSubmit}>
           {/* Full Name */}
           <div>
             <input
@@ -168,6 +170,20 @@ export default function SignUp() {
                 </svg>
               )}
             </button>
+          </div>
+          
+          {/* API KEY */}
+          <div>
+            <input
+              id="apiKey"
+              name="apiKey"
+              type="apiKey"
+              required
+              value={formData.apiKey}
+              onChange={handleInputChange}
+              className={`w-full px-4 py-3 rounded-lg border transition-all duration-200 focus:ring-2 focus:ring-opacity-50 ${inputClasses}`}
+              placeholder="YOUR API KEY"
+            />
           </div>
 
           {/* Terms Agreement */}

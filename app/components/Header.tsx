@@ -19,6 +19,7 @@ export default function Header() {
   const primaryColor = theme === 'dark' ? 'text-cyan-400' : 'text-blue-600';
 
   return (
+    <>
     <header className={`fixed top-0 w-full backdrop-blur-lg z-50 border-b transition-all duration-300 ${headerClasses}`}>
       <nav className="max-w-7xl mx-auto flex justify-between items-center px-4 lg:px-8 py-4">
 
@@ -128,5 +129,7 @@ export default function Header() {
         </div>
       </div>
     </header>
+    
+    </>
   );
 }

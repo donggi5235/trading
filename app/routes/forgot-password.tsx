@@ -72,10 +72,11 @@ export default function ForgotPassword() {
     : 'border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white';
 
   return (
-    <div className={`min-h-screen transition-all duration-300 ${themeClasses}`}>
+    <div className={`${themeClasses}`}>
         {/* Header */}
         <Header/>
-    <div className={`min-h-screen flex items-center justify-center px-4 py-12 transition-all duration-300 ${themeClasses}`}>
+        <div className="h-[80px]"></div>
+    <div className={`flex items-center justify-center px-4 py-24 transition-all duration-300 ${themeClasses}`}>
       <div className={`w-full max-w-md space-y-8 p-8 rounded-2xl shadow-2xl border transition-all duration-300 ${cardClasses}`}>
         
         {!isSubmitted ? (

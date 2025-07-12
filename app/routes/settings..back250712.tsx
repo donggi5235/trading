@@ -1,5 +1,5 @@
 import { useThemeStore } from '~/stores/themeStore';
-import DashHeader from '~/components/dashHeader';
+import DashHeader from '~/components/DashHeader';
 
 import { useState } from 'react';
 import { useNavigate } from '@remix-run/react';

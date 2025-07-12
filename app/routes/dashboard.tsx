@@ -1,287 +1,315 @@
-import { useState, useContext, createContext, useEffect } from 'react';
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import React, { useState, useEffect } from 'react';
+import { useThemeStore } from '../stores/themeStore';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 import { 
-User, 
-DollarSign, 
-TrendingUp, 
-TrendingDown, 
-CreditCard, 
-Plus, 
-Gift, 
-BarChart3,
-Activity,
-Shield,
-ArrowUpRight,
-ArrowDownRight,
+  DollarSign,
+  CreditCard,
+  TrendingUp,
+  Activity,
+  ArrowUpRight,
+  CheckCircle,
+  AlertCircle,
+  Brain,
+  Plus,
+  Gift
 } from 'lucide-react';
 
-import { useThemeStore } from '~/stores/themeStore';
-import DashHeader from '~/components/dashHeader';
+import DashHeader from '~/components/DashHeader';
+import DashSidebar from '~/components/DashSidebar';
+import DashFooter from '~/components/DashFooter';
 
-// Theme Context
-interface ThemeContextType {
-  theme: string;
-}
-const ThemeContext = createContext<ThemeContextType | null>(null);
-
-const ThemeProvider = ({ children }: any) => {
-  const { theme } = useThemeStore();
+const Dashboard = () => {
+  const { theme, toggleTheme } = useThemeStore();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [activeTab, setActiveTab] = useState('home');
+  const [chartPeriod, setChartPeriod] = useState('일');
+  const [autoTradingEnabled, setAutoTradingEnabled] = useState(true);
   
+  // 화면 크기에 따른 사이드바 초기 상태 설정
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setSidebarOpen(true);
+      } else {
+        setSidebarOpen(false);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // 상단 탭 메뉴
+  const topTabs = [
+    { id: 'home', label: '홈' },
+    { id: 'plan', label: '자동매매설정' },
+    { id: 'security', label: '전략타겟' },
+    { id: 'account', label: '자산현황' },
+    { id: 'account', label: '열림' },
+    { id: 'account', label: '수익률' }
+  ];
+  // 포트폴리오 데이터
+  const portfolioData = [
+    { 
+      종목명: 'TSLA', 
+      현재가: 250.5, 
+      평균가: 240.2, 
+      수량: 50, 
+      평가금액: 12525000, 
+      수익률: 4.3, 
+      전략적용여부: true 
+    },
+    { 
+      종목명: 'NVDA', 
+      현재가: 890.2, 
+      평균가: 850.1, 
+      수량: 25, 
+      평가금액: 22255000, 
+      수익률: 4.7, 
+      전략적용여부: false 
+    },
+    { 
+      종목명: 'AMZN', 
+      현재가: 3420.8, 
+      평균가: 3500.2, 
+      수량: 10, 
+      평가금액: 34208000, 
+      수익률: -2.3, 
+      전략적용여부: true 
+    },
+    { 
+      종목명: 'AAPL', 
+      현재가: 195.3, 
+      평균가: 180.5, 
+      수량: 75, 
+      평가금액: 14647500, 
+      수익률: 8.2, 
+      전략적용여부: true 
+    },
+  ];
+
+  // 차트 데이터 (기간별)
+  const chartDataByPeriod = {
+    일: [
+      { time: '09:00', value: 15000000 },
+      { time: '10:00', value: 15120000 },
+      { time: '11:00', value: 14980000 },
+      { time: '12:00', value: 15200000 },
+      { time: '13:00', value: 15350000 },
+      { time: '14:00', value: 15430000 },
+    ],
+    주간: [
+      { time: '월', value: 14800000 },
+      { time: '화', value: 15100000 },
+      { time: '수', value: 14950000 },
+      { time: '목', value: 15300000 },
+      { time: '금', value: 15430000 },
+    ],
+    월: [
+      { time: '1월', value: 14000000 },
+      { time: '2월', value: 14500000 },
+      { time: '3월', value: 14200000 },
+      { time: '4월', value: 15000000 },
+      { time: '5월', value: 15200000 },
+      { time: '6월', value: 15430000 },
+    ]
+  };
+
+  // 최근 체결 내역
+  const recentTrades = [
+    { id: 1, symbol: 'TSLA', type: 'BUY', amount: 10, price: 250.5, time: '14:25:32', profit: '+2.1%' },
+    { id: 2, symbol: 'NVDA', type: 'SELL', amount: 5, price: 890.2, time: '14:20:15', profit: '+4.5%' },
+    { id: 3, symbol: 'AAPL', type: 'BUY', amount: 25, price: 195.3, time: '14:15:48', profit: '+1.8%' },
+  ];
+
+  // 전략 성과 데이터
+  const strategyPerformance = [
+    { 전략명: 'RSI 역추세', 수익률: 12.5, 승률: 68.2, 최대낙폭: -3.8 },
+    { 전략명: '볼린저밴드', 수익률: 8.3, 승률: 72.5, 최대낙폭: -2.1 },
+    { 전략명: '이동평균 돌파', 수익률: 15.2, 승률: 65.8, 최대낙폭: -5.2 },
+  ];
+
   return (
-    <ThemeContext.Provider value={{theme}}>
-      <div className={theme === 'dark' ? 'dark' : ''}>
-        {children}
-      </div>
-    </ThemeContext.Provider>
-  );
-};
+    <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
+      {/* Sidebar */}
+      <DashSidebar
+        theme={theme}
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+        activeMenu="대시보드"
+      />
 
-const useTheme = () => {
-const context = useContext(ThemeContext);
-if (!context) {
-  throw new Error('useTheme must be used within ThemeProvider');
-}
-return context;
-};
-
-const TradingDashboard = () => {
-const [sidebarOpen, setSidebarOpen] = useState(false);
-const { theme, toggleTheme } = useThemeStore();
-
-// 화면 크기에 따른 사이드바 초기 상태 설정
-useEffect(() => {
-  const handleResize = () => {
-    if (window.innerWidth >= 1024) { // lg 브레이크포인트
-      setSidebarOpen(true); // PC에서는 열림
-    } else {
-      setSidebarOpen(false); // 모바일에서는 닫힘
-    }
-  };
-
-  // 초기 설정
-  handleResize();
-
-  // 윈도우 리사이즈 이벤트 리스너
-  window.addEventListener('resize', handleResize);
-
-  return () => {
-    window.removeEventListener('resize', handleResize);
-  };
-}, []);
-
-// DashHeader 컴포넌트에서 사이드바와 헤더 분리
-const dashComponents = DashHeader({
-  theme,
-  toggleTheme,
-  sidebarOpen,
-  setSidebarOpen
-});
-
-// 화면 크기에 따른 사이드바 초기 상태 설정
-useEffect(() => {
-  const handleResize = () => {
-    if (window.innerWidth >= 1024) { // lg 브레이크포인트
-      setSidebarOpen(true); // PC에서는 열림
-    } else {
-      setSidebarOpen(false); // 모바일에서는 닫힘
-    }
-  };
-
-  // 초기 설정
-  handleResize();
-
-  // 윈도우 리사이즈 이벤트 리스너
-  window.addEventListener('resize', handleResize);
-
-  return () => {
-    window.removeEventListener('resize', handleResize);
-  };
-}, []);
-
-// 샘플 데이터
-const portfolioData = [
-  { name: '전기차', value: 35, color: '#00d4aa', amount: 5425000 },
-  { name: '항공우주', value: 20, color: '#1e88e5', amount: 3100000 },
-  { name: '2차전지', value: 25, color: '#7c4dff', amount: 3875000 },
-  { name: 'AI/Tech', value: 15, color: '#ff6b6b', amount: 2325000 },
-  { name: '기타', value: 5, color: '#ffa726', amount: 775000 }
-];
-
-const tradingVolumeData = [
-  { month: '1월', volume: 1200, profit: 150 },
-  { month: '2월', volume: 1800, profit: 280 },
-  { month: '3월', volume: 2200, profit: 340 },
-  { month: '4월', volume: 1900, profit: 190 },
-  { month: '5월', volume: 2500, profit: 420 },
-  { month: '6월', volume: 3100, profit: 580 }
-];
-
-const profitLossData = [
-  { date: '6/1', value: 15000000, pnl: 0 },
-  { date: '6/8', value: 15200000, pnl: 200000 },
-  { date: '6/15', value: 14950000, pnl: -50000 },
-  { date: '6/22', value: 15400000, pnl: 400000 },
-  { date: '6/29', value: 15650000, pnl: 650000 },
-  { date: '7/5', value: 15430000, pnl: 430000 }
-];
-
-const recentTrades = [
-  { id: 1, symbol: 'TSLA', type: 'BUY', amount: 50, price: 250.5, time: '09:30', status: 'completed' },
-  { id: 2, symbol: 'NVDA', type: 'SELL', amount: 25, price: 890.2, time: '10:15', status: 'completed' },
-  { id: 3, symbol: 'AMZN', type: 'BUY', amount: 10, price: 3420.8, time: '11:22', status: 'pending' },
-  { id: 4, symbol: 'AAPL', type: 'SELL', amount: 75, price: 195.3, time: '14:05', status: 'completed' },
-];
-
-return (
-  <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
-    {/* Sidebar Component */}
-    {dashComponents.sidebar}
-
-    {/* Main Content */}
-    <div className={`transition-all duration-300 ${sidebarOpen ? 'lg:ml-64' : 'lg:ml-0'}`}>
-      {/* Header */}
-      {dashComponents.header}
-      
-      {/* Dashboard Content */}
-      <main className="p-6">
-        {/* 계좌 정보 카드들 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className={`rounded-xl shadow-lg p-6 border ${
-            theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
-          }`}>
-            <div className="flex items-center justify-between mb-4">
-              <div className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                총 자산
-              </div>
-              <DollarSign className="w-5 h-5 text-cyan-500" />
-            </div>
-            <div className="flex items-center mb-2">
-              <ArrowUpRight className="w-6 h-6 text-green-500 mr-2" />
-              <span className="text-3xl font-bold text-green-500">+8.5%</span>
-            </div>
-            <div className={`text-lg font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-              ₩15,430,000
-            </div>
-          </div>
-
-          <div className={`rounded-xl shadow-lg p-6 border ${
-            theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
-          }`}>
-            <div className="flex items-center justify-between mb-4">
-              <div className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                거래가능금액
-              </div>
-              <CreditCard className="w-5 h-5 text-blue-500" />
-            </div>
-            <div className={`text-3xl font-bold text-blue-500 mb-2`}>
-              53.3%
-            </div>
-            <div className={`text-lg font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-              ₩8,230,000
-            </div>
-            <div className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'} mt-1`}>
-              전체 자산 대비
-            </div>
-          </div>
-
-          <div className={`rounded-xl shadow-lg p-6 border ${
-            theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
-          }`}>
-            <div className="flex items-center justify-between mb-4">
-              <div className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                일일 손익
-              </div>
-              <TrendingUp className="w-5 h-5 text-green-500" />
-            </div>
-            <div className="flex items-center mb-2">
-              <ArrowUpRight className="w-6 h-6 text-green-500 mr-2" />
-              <span className="text-3xl font-bold text-green-500">+2.1%</span>
-            </div>
-            <div className="text-lg font-medium text-green-400">
-              +₩145,200
-            </div>
-            <div className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'} mt-1`}>
-              오늘 기준
-            </div>
-          </div>
-
-          <div className={`rounded-xl shadow-lg p-6 border ${
-            theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
-          }`}>
-            <div className="flex items-center justify-between mb-4">
-              <div className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-                활성 포지션
-              </div>
-              <Activity className="w-5 h-5 text-purple-500" />
-            </div>
-            <div className="flex items-center mb-2">
-              <span className={`text-3xl font-bold text-purple-500 mr-2`}>66.7%</span>
-              <TrendingUp className="w-5 h-5 text-green-500" />
-            </div>
-            <div className={`text-lg font-medium ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-              12개 포지션
-            </div>
-            <div className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'} mt-1`}>
-              8개 수익중 (4개 손실)
+      {/* Main Content */}
+      <div className={`transition-all duration-300 ${sidebarOpen ? 'lg:ml-64' : 'lg:ml-0'}`}>
+        {/* Header */}
+        <DashHeader
+          theme={theme}
+          toggleTheme={toggleTheme}
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          title="대시보드"
+        />
+        {/* 상단 탭 네비게이션 */}
+        <div className="border-t border-gray-200 dark:border-gray-700">
+          <div className="px-4 lg:px-6">
+            <div className="flex space-x-8 overflow-x-auto">
+              {topTabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab && setActiveTab(tab.id)}
+                  className={`py-3 px-1 text-sm font-medium border-b-2 whitespace-nowrap transition-colors ${
+                    activeTab === tab.id 
+                      ? theme === 'dark'
+                        ? 'border-cyan-400 text-cyan-400'
+                        : 'border-blue-600 text-blue-600'
+                      : theme === 'dark'
+                        ? 'border-transparent text-gray-400 hover:text-gray-300'
+                        : 'border-transparent text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
           </div>
         </div>
+        {/* Dashboard Content */}
+        <main className="p-6">
+          {/* 내 계좌 섹션 */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className={`rounded-xl shadow-lg p-6 border ${
+              theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+            }`}>
+              <div className="flex items-center justify-between mb-4">
+                <div className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                  총 자산
+                </div>
+                <DollarSign className="w-5 h-5 text-green-500" />
+              </div>
+              <div className={`text-2xl font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-900'} mb-2`}>
+                ₩83,635,500
+              </div>
+              <div className="text-green-500 text-sm">전일 대비 +2.1%</div>
+            </div>
 
-        {/* 차트 섹션 */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* 손익 차트 */}
-          <div className={`rounded-xl shadow-lg p-6 border ${
-            theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
-          }`}>
-            <h3 className={`text-lg font-bold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
-              포트폴리오 성과
-            </h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={profitLossData}>
-                <defs>
-                  <linearGradient id="colorPnl" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#00d4aa" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#00d4aa" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke={theme === 'dark' ? "#374151" : "#e5e7eb"} />
-                <XAxis dataKey="date" stroke={theme === 'dark' ? "#9ca3af" : "#6b7280"} />
-                <YAxis stroke={theme === 'dark' ? "#9ca3af" : "#6b7280"} />
-                <Tooltip 
-                  contentStyle={{
-                    backgroundColor: theme === 'dark' ? "#1f2937" : "#ffffff",
-                    border: `1px solid ${theme === 'dark' ? "#374151" : "#e5e7eb"}`,
-                    borderRadius: "8px",
-                    color: theme === 'dark' ? "#ffffff" : "#000000"
-                  }}
-                />
-                <Area type="monotone" dataKey="value" stroke="#00d4aa" fillOpacity={1} fill="url(#colorPnl)" strokeWidth={2} />
-              </AreaChart>
-            </ResponsiveContainer>
+            <div className={`rounded-xl shadow-lg p-6 border ${
+              theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+            }`}>
+              <div className="flex items-center justify-between mb-4">
+                <div className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                  평가손익
+                </div>
+                <TrendingUp className="w-5 h-5 text-blue-500" />
+              </div>
+              <div className={`text-2xl font-bold text-blue-500 mb-2`}>
+                +₩1,847,200
+              </div>
+              <div className="text-blue-500 text-sm">수익률 +2.26%</div>
+            </div>
+
+            <div className={`rounded-xl shadow-lg p-6 border ${
+              theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+            }`}>
+              <div className="flex items-center justify-between mb-4">
+                <div className={`text-sm font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                  보유품목
+                </div>
+                <Activity className="w-5 h-5 text-purple-500" />
+              </div>
+              <div className={`text-2xl font-bold text-purple-500 mb-2`}>
+                4종목
+              </div>
+              <div className="text-purple-500 text-sm">활성 전략 3개</div>
+            </div>
           </div>
 
-          {/* 포트폴리오 비중 */}
-          <div className={`rounded-xl shadow-lg p-6 border ${
-            theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
-          }`}>
-            <h3 className={`text-lg font-bold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
-              포트폴리오 비중
-            </h3>
-            <div className="flex justify-center mb-4">
-              <ResponsiveContainer width="100%" height={200}>
-                <PieChart>
-                  <Pie
-                    data={portfolioData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={90}
-                    dataKey="value"
-                  >
-                    {portfolioData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
+          {/* 자동매매 & 포트폴리오 섹션 */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            {/* 자동매매 */}
+            <div className={`rounded-xl shadow-lg p-6 border ${
+              theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+            }`}>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className={`text-lg font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
+                  자동매매
+                </h3>
+                <button 
+                  onClick={() => setAutoTradingEnabled(!autoTradingEnabled)}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    autoTradingEnabled ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'
+                  }`}
+                >
+                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    autoTradingEnabled ? 'translate-x-6' : 'translate-x-1'
+                  }`} />
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>활성 전략 수</span>
+                  <span className={`font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>3개</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>금일 거래</span>
+                  <span className={`font-semibold text-green-500`}>12회</span>
+                </div>
+                <div className="mt-4">
+                  <div className={`text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>최근 체결내역</div>
+                  <div className="space-y-2">
+                    {recentTrades.slice(0, 3).map((trade) => (
+                      <div key={trade.id} className="flex justify-between items-center text-xs">
+                        <span className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                          {trade.symbol} {trade.type}
+                        </span>
+                        <span className={`${trade.profit.startsWith('+') ? 'text-green-500' : 'text-red-500'}`}>
+                          {trade.profit}
+                        </span>
+                      </div>
                     ))}
-                  </Pie>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 수익률 차트 */}
+            <div className={`rounded-xl shadow-lg p-6 border ${
+              theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+            }`}>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className={`text-lg font-bold ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
+                  수익률 차트
+                </h3>
+                <div className="flex space-x-2">
+                  {['일', '주간', '월'].map((period) => (
+                    <button
+                      key={period}
+                      onClick={() => setChartPeriod(period)}
+                      className={`px-3 py-1 text-xs rounded transition-colors ${
+                        chartPeriod === period
+                          ? 'bg-blue-500 text-white'
+                          : theme === 'dark'
+                            ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      {period}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <ResponsiveContainer width="100%" height={250}>
+                <AreaChart data={chartDataByPeriod[chartPeriod]}>
+                  <defs>
+                    <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke={theme === 'dark' ? "#374151" : "#e5e7eb"} />
+                  <XAxis dataKey="time" stroke={theme === 'dark' ? "#9ca3af" : "#6b7280"} />
+                  <YAxis stroke={theme === 'dark' ? "#9ca3af" : "#6b7280"} />
                   <Tooltip 
                     contentStyle={{
                       backgroundColor: theme === 'dark' ? "#1f2937" : "#ffffff",
@@ -290,71 +318,54 @@ return (
                       color: theme === 'dark' ? "#ffffff" : "#000000"
                     }}
                   />
-                </PieChart>
+                  <Area type="monotone" dataKey="value" stroke="#3B82F6" fillOpacity={1} fill="url(#colorValue)" strokeWidth={2} />
+                </AreaChart>
               </ResponsiveContainer>
             </div>
-            <div className="space-y-2">
-              {portfolioData.map((item, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <div className="w-3 h-3 rounded-full mr-2" style={{backgroundColor: item.color}}></div>
-                    <span className={`text-sm ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>{item.name}</span>
-                  </div>
-                  <div className="text-right">
-                    <div className={`text-sm font-semibold ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{item.value}%</div>
-                    <div className={`text-xs ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>₩{item.amount.toLocaleString()}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
-        </div>
 
-        {/* 하단 섹션 */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* 최근 거래 */}
-          <div className={`lg:col-span-2 rounded-xl shadow-lg p-6 border ${
+          {/* 포트폴리오 테이블 */}
+          <div className={`rounded-xl shadow-lg p-6 border mb-8 ${
             theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
           }`}>
             <h3 className={`text-lg font-bold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
-              최근 거래
+              포트폴리오
             </h3>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className={`border-b ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'}`}>
-                    <th className={`text-left py-2 text-sm font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>종목</th>
-                    <th className={`text-left py-2 text-sm font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>타입</th>
-                    <th className={`text-left py-2 text-sm font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>수량</th>
-                    <th className={`text-left py-2 text-sm font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>가격</th>
-                    <th className={`text-left py-2 text-sm font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>시간</th>
-                    <th className={`text-left py-2 text-sm font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>상태</th>
+                    <th className={`text-left py-3 text-sm font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>종목명</th>
+                    <th className={`text-left py-3 text-sm font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>현재가</th>
+                    <th className={`text-left py-3 text-sm font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>평균가</th>
+                    <th className={`text-left py-3 text-sm font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>수량</th>
+                    <th className={`text-left py-3 text-sm font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>평가금액</th>
+                    <th className={`text-left py-3 text-sm font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>수익률</th>
+                    <th className={`text-left py-3 text-sm font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>전략적용여부</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {recentTrades.map((trade) => (
-                    <tr key={trade.id} className={`border-b ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'}`}>
-                      <td className={`py-3 font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{trade.symbol}</td>
-                      <td className="py-3">
-                        <span className={`px-2 py-1 rounded text-xs font-medium ${
-                          trade.type === 'BUY' 
-                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
-                            : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
-                        }`}>
-                          {trade.type}
-                        </span>
+                  {portfolioData.map((item, index) => (
+                    <tr key={index} className={`border-b ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'}`}>
+                      <td className={`py-3 font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>{item.종목명}</td>
+                      <td className={`py-3 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>₩{item.현재가.toLocaleString()}</td>
+                      <td className={`py-3 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>₩{item.평균가.toLocaleString()}</td>
+                      <td className={`py-3 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>{item.수량}</td>
+                      <td className={`py-3 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>₩{item.평가금액.toLocaleString()}</td>
+                      <td className={`py-3 font-medium ${item.수익률 > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                        {item.수익률 > 0 ? '+' : ''}{item.수익률}%
                       </td>
-                      <td className={`py-3 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>{trade.amount}</td>
-                      <td className={`py-3 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>₩{trade.price}</td>
-                      <td className={`py-3 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>{trade.time}</td>
                       <td className="py-3">
-                        <span className={`px-2 py-1 rounded text-xs font-medium ${
-                          trade.status === 'completed' 
-                            ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300'
-                            : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
-                        }`}>
-                          {trade.status === 'completed' ? '완료' : '대기중'}
-                        </span>
+                        <button 
+                          onClick={() => {/* 전략 적용/해제 로직 */}}
+                          className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                            item.전략적용여부 ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'
+                          }`}
+                        >
+                          <span className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
+                            item.전략적용여부 ? 'translate-x-5' : 'translate-x-1'
+                          }`} />
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -363,65 +374,92 @@ return (
             </div>
           </div>
 
-          {/* 투자 성향 & 액션 버튼 */}
-          <div className="space-y-6">
+          {/* 하단 섹션 */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            {/* 최근 알림 */}
             <div className={`rounded-xl shadow-lg p-6 border ${
               theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
             }`}>
               <h3 className={`text-lg font-bold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
-                투자 성향
+                최근 알림
               </h3>
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Shield className="w-8 h-8 text-white" />
-                </div>
-                <div className="text-lg font-bold text-purple-500 mb-2">적극 투자형</div>
-                <div className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} mb-4`}>
-                  고위험 고수익 추구
+              <div className="space-y-4">
+                <div className={`p-3 rounded-lg ${theme === 'dark' ? 'bg-gray-700' : 'bg-blue-50'}`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className={`text-sm font-medium ${theme === 'dark' ? 'text-white' : 'text-blue-900'}`}>전체 체결내역</span>
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                  </div>
+                  <div className={`text-xs ${theme === 'dark' ? 'text-gray-300' : 'text-blue-700'}`}>
+                    금일 총 12회 거래 완료
+                  </div>
                 </div>
                 
-                <div className={`bg-gradient-to-r from-gray-200 to-gray-300 rounded-full h-2 mb-2 ${theme === 'dark' ? 'from-gray-700 to-gray-600' : ''}`}>
-                  <div className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full" style={{width: '85%'}}></div>
+                <div className={`p-3 rounded-lg ${theme === 'dark' ? 'bg-gray-700' : 'bg-green-50'}`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className={`text-sm font-medium ${theme === 'dark' ? 'text-white' : 'text-green-900'}`}>승률</span>
+                    <TrendingUp className="w-4 h-4 text-green-500" />
+                  </div>
+                  <div className={`text-xs ${theme === 'dark' ? 'text-gray-300' : 'text-green-700'}`}>
+                    현재 승률 68.2% (목표 대비 +3.2%)
+                  </div>
                 </div>
-                <div className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>위험 수용도: 85%</div>
+                
+                <div className={`p-3 rounded-lg ${theme === 'dark' ? 'bg-gray-700' : 'bg-orange-50'}`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className={`text-sm font-medium ${theme === 'dark' ? 'text-white' : 'text-orange-900'}`}>최대낙폭</span>
+                    <AlertCircle className="w-4 h-4 text-orange-500" />
+                  </div>
+                  <div className={`text-xs ${theme === 'dark' ? 'text-gray-300' : 'text-orange-700'}`}>
+                    현재 -2.1% (안전 구간)
+                  </div>
+                </div>
               </div>
             </div>
 
+            {/* 전략성과요약 */}
             <div className={`rounded-xl shadow-lg p-6 border ${
               theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
             }`}>
               <h3 className={`text-lg font-bold mb-4 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
-                빠른 액션
+                전략성과요약
               </h3>
-              <div className="space-y-3">
-                <button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 text-white py-3 rounded-lg font-medium hover:from-green-600 hover:to-emerald-600 transition duration-200 flex items-center justify-center">
-                  <Plus className="w-4 h-4 mr-2" />
-                  자금 충전
-                </button>
-                <button className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white py-3 rounded-lg font-medium hover:from-blue-600 hover:to-cyan-600 transition duration-200">
-                  계좌 이체
-                </button>
-                <button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-lg font-medium hover:from-purple-600 hover:to-pink-600 transition duration-200 flex items-center justify-center">
-                  <Gift className="w-4 h-4 mr-2" />
-                  쿠폰 사용
-                </button>
+              <div className="space-y-4">
+                {strategyPerformance.map((strategy, index) => (
+                  <div key={index} className={`p-4 rounded-lg border ${
+                    theme === 'dark' ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'
+                  }`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className={`font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+                        {strategy.전략명}
+                      </span>
+                      <Brain className="w-4 h-4 text-purple-500" />
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 text-xs">
+                      <div>
+                        <div className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>수익률</div>
+                        <div className="text-green-500 font-medium">+{strategy.수익률}%</div>
+                      </div>
+                      <div>
+                        <div className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>승률</div>
+                        <div className="text-blue-500 font-medium">{strategy.승률}%</div>
+                      </div>
+                      <div>
+                        <div className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>최대낙폭</div>
+                        <div className="text-red-500 font-medium">{strategy.최대낙폭}%</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-        </div>
-      </main>
+        </main>
+
+        {/* Footer */}
+        <DashFooter theme={theme} />
+      </div>
     </div>
-  </div>
-);
+  );
 };
 
-// Main App Component
-const App = () => {
-return (
-  <ThemeProvider>
-    <TradingDashboard />
-  </ThemeProvider>
-);
-};
-
-export default App;
+export default Dashboard;

@@ -415,7 +415,7 @@ const AccountSettings = () => {
               theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
             }`}>
               <h3 className={`text-lg font-medium mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
-                {tabs.find(tab => tab.id === activeTab)?.label}
+                {topTabs.find(tab => tab.id === activeTab)?.label}
               </h3>
               <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                 이 섹션은 준비 중입니다.
@@ -426,6 +426,7 @@ const AccountSettings = () => {
 
         {/* Footer */}
         <DashFooter theme={theme} />
+        
         {/* Delete Account Modal */}
         {showDeleteModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

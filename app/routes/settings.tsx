@@ -1,18 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useThemeStore } from '../stores/themeStore';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
-import { 
-  DollarSign,
-  CreditCard,
-  TrendingUp,
-  Activity,
-  ArrowUpRight,
-  CheckCircle,
-  AlertCircle,
-  Brain,
-  Plus,
-  Gift
-} from 'lucide-react';
 
 import DashHeader from '~/components/DashHeader';
 import DashSidebar from '~/components/DashSidebar';
@@ -39,7 +26,7 @@ const Settings = () => {
   }, []);
 
   // 상단 탭 메뉴
-  const topTabs = [{id:'darkmode',label:'다크모드'}];
+  const topTabs = [{id:'darkmode',label:'환경설정'}];
 
 
   return (
@@ -89,7 +76,7 @@ const Settings = () => {
 
         {/* Settings Content */}
         <div className="p-6">
-          
+          환경설정 페이지
         </div>
 
         {/* Footer */}
